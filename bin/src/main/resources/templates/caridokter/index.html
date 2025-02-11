@@ -1,0 +1,187 @@
+<!Doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{fragments/layout}">
+
+<div layout:fragment="content" style="margin: 0px;">
+	<div class="navbarcaridok">
+		<ul>
+			<li style="color: rgb(0, 128, 255);"><a href="/index" style="  text-decoration: none;">Beranda /</a></li>
+			<li style="color: grey;">&nbsp;Cari Dokter</li>
+		</ul>
+	</div>
+
+	<div class="container-fluid hasil">
+		<div class="row">
+			<div class="col-sm-9">
+				<h5>Hasil Pencarian berdasarkan kata kunci: <span class="katakunci"></span> </h5>
+				<h5>Spesialisasi/Sub-spesialisasi: <span class="spesi"></span> </h5>
+			</div>
+			<div class="col-sm-3" align="right">
+				<button class="btn btn-outline-primary px-4 py-2 fw-bold" onclick="caridokter()">Ulangi
+					Pencarian</button>
+			</div>
+		</div>
+	</div>
+	<div class="container-fluid hasil2">
+		<div class="row" id="datadokter">
+			<div class="col-sm-6 kolom2">
+				<div class="kolomdokter">
+					<div class="row">
+						<div class="col-sm-9">
+							<table>
+								<tr>
+									<td><strong>Nama Dokter</strong></td>
+								</tr>
+								<tr>
+									<td style="font-size: 9pt; padding-left: 10px;">Spesialis Anak</td>
+								</tr>
+								<tr>
+									<td style="font-size: 9pt; padding-left: 10px; padding-bottom: 10px;">5 Tahun
+										Pengalaman</td>
+								</tr>
+								<tr>
+									<td style="font-size: 10pt; padding-left: 11px;"><img src="/images/building.svg"
+											width="15px" height="auto">RS Mitra</td>
+								</tr>
+								<tr>
+									<td style="font-size: 10pt; padding-left: 11px;"><img src="/images/building.svg"
+											width="15px" height="auto">RS Persahabatan</td>
+								</tr>
+								<tr>
+									<td style="padding-top: 10px;"><button
+											class="btn btn-outline-primary btn-sm btn-block">Lihat info Lebih
+											banyak</button></td>
+								</tr>
+							</table>
+						</div>
+						<div class="col-sm-3">
+							<table>
+								<tr rowspan="4">
+									<td style="padding-bottom: 10px;"><img class="img-responsive pdoctor"
+											src="/images/doctor.png" width="80" height="auto"></td>
+								</tr>
+								<tr>
+									<td><button class="btn btn-outline-primary btn-sm btn-block">Chat</button></td>
+								</tr>
+								<tr>
+									<td><button class="btn btn-primary btn-sm btn-block">Buat Janji</button></td>
+								</tr>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+
+		</div>
+	</div>
+
+	<script>
+		function caridokter() {
+			$.ajax({
+				url: '/caridokter/form',
+				type: 'get',
+				contentType: 'html',
+				success: function (result) {
+					$('#mymodal').modal('show')
+					$('.modal-title').html('Cari Dokter')
+					$('.modal-body').html(result)
+				}
+			})
+		}
+
+		function cari() {
+			if ($("#spesialisasi").val() == "") {
+				$("#val_pass").html("*Pilihan Spesialisasi harus diisi");
+			} else {
+				var location = $('#location').val()
+				var fullname = $('#fullname').val()
+				var specialization = $('#specialization').val()
+				var tindakan = $('#tindakan').val()
+				
+				if(location=="") location="_";
+				if(fullname=="") fullname="_";
+				if(specialization=="") specialization="_";
+				if(tindakan=="") tindakan="_";
+
+				var str = "";
+
+				$.ajax({
+					url: '/api/caridokter/caridoctor/' + location + '/' + fullname + '/' + specialization + '/' + tindakan,
+					type: 'get',
+					contentType: 'application/json',
+					success: function (data) {
+						console.log(data);
+						for (i = 0; i < data.length; i++) {
+							str += '<div class="col-sm-6 kolom2">';
+							str += '<div class="kolomdokter">';
+							str += '<div class="row">';
+							str += '<div class="col-sm-9">';
+							str += '<table>';
+							str += '<tr><td><strong>' + data[i].fullname + '</strong></td></tr>';
+							str += '<tr><td style="font-size: 9pt; padding-left: 10px;">' + data[i].specialization + '</td></tr>';
+							str += '<tr><td style="font-size: 9pt; padding-left: 10px; padding-bottom: 10px;">5 Tahun Pengalaman</td></tr>';
+							str += '<tr><td style="font-size: 10pt; padding-left: 11px;"><img src="/images/building.svg" width="15px" height="auto">' + data[i].rs + ' (' + data[i].name + ')' +'</td></tr>';
+							str += '<tr><td style="padding-top: 10px;"><button class="btn btn-outline-primary btn-sm btn-block">Lihat info Lebih banyak</button></td></tr>';
+							str += '</table>';
+							str += '</div>';
+							str += '<div class="col-sm-3">';
+							str += '<table>';
+							str += '<tr rowspan="4"><td style="padding-bottom: 10px;"><img class="img-responsive pdoctor" src="/images/doctor.png" width="80" height="auto"></td></tr>';
+							str += '<tr><td><button class="btn btn-outline-primary btn-sm btn-block">Chat</button></td></tr>';
+							str += '<tr><td><button class="btn btn-primary btn-sm btn-block">Buat Janji</button></td></tr>';
+							str += '</table>';
+							str += '</div>';
+							str += '</div>';
+							str += '</div>';
+							str += '</div>';
+						}
+						$('#datadokter').html(str);
+					}
+				})
+				$('#mymodal').modal('hide')
+				$('.katakunci').html(location+","+fullname+","+tindakan);
+				$('.spesi').html(specialization);
+				
+			}
+		}
+		
+		$.ajax({
+			
+					url: '/api/caridokter/finddoctor',
+					type: 'get',
+					contentType: 'application/json',
+					success: function (data) {
+						console.log(data);
+						var str = "";
+						for (i = 0; i < data.length; i++) {
+							str += '<div class="col-sm-6 kolom2">';
+							str += '<div class="kolomdokter">';
+							str += '<div class="row">';
+							str += '<div class="col-sm-9">';
+							str += '<table>';
+							str += '<tr><td><strong>' + data[i].t_doctor_treatment.m_doctor.m_biodata.fullname + '</strong></td></tr>';
+							str += '<tr><td style="font-size: 9pt; padding-left: 10px; display:inline">' + data[i].t_doctor_treatment.name + '</td></tr>';
+							str += '<tr><td style="font-size: 9pt; padding-left: 10px;"> Spesialis </td></tr>';
+							str += '<tr><td style="font-size: 9pt; padding-left: 10px; padding-bottom: 10px;">5 Tahun Pengalaman</td></tr>';
+							str += '<tr><td style="font-size: 10pt; padding-left: 11px;"><img src="/images/building.svg" width="15px" height="auto">' + data[i].t_doctor_office.m_medical_facility.name + ' (' + data[i].t_doctor_office.m_medical_facility.m_location.name + ')' +'</td></tr>';
+							str += '<tr><td style="padding-top: 10px;"><button class="btn btn-outline-primary btn-sm btn-block">Lihat info Lebih banyak</button></td></tr>';
+							str += '</table>';
+							str += '</div>';
+							str += '<div class="col-sm-3">';
+							str += '<table>';
+							str += '<tr rowspan="4"><td style="padding-bottom: 10px;"><img class="img-responsive pdoctor" src="/images/doctor.png" width="80" height="auto"></td></tr>';
+							str += '<tr><td><button class="btn btn-outline-primary btn-sm btn-block">Chat</button></td></tr>';
+							str += '<tr><td><button class="btn btn-primary btn-sm btn-block">Buat Janji</button></td></tr>';
+							str += '</table>';
+							str += '</div>';
+							str += '</div>';
+							str += '</div>';
+							str += '</div>';
+						}
+						$('#datadokter').html(str);
+					}
+				})
+	</script>
+</div>
+
+</html>

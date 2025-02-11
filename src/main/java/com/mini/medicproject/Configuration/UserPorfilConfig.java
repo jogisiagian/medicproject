@@ -7,7 +7,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 public class UserPorfilConfig implements WebMvcConfigurer {
 
-	String mypath = "file:///D:\\Foto\\javafile\\";
+	String mypath = "file:///D:\\Foto\\javafile\\test\\";
 	
 	@Override
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {

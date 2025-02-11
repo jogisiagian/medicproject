@@ -1,0 +1,95 @@
+<!Doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+<div>
+<p style="text-align: center;">Masukkan minimal 1 kata kunci untuk pencarian dokter Anda</p>
+
+
+<table class="table">
+	<tr>
+		<td colspan="2">Lokasi
+			<select name="location" id="location" class="form-select">
+				<option value="_" selected ></option>
+				<option value="saab">Saab</option>
+			</select>
+		</td>
+	</tr>
+	<tr>
+		<td colspan="2">Nama Dokter
+			<input type="text" id="fullname" class="form-control">
+		</td>
+	</tr>
+	<tr>
+		<td colspan="2">Spesialisasi/Sub-spesialisasi*
+			<select name="spesialisasi" id="specialization" class="form-select">
+				<option selected value="_" style="color: grey;" >--Pilih--</option>
+				<option value="saab">Saab</option>
+			</select>
+			<i><span class="valid" id="val_pass"></span>
+		</td>
+	</tr>
+	<tr>
+		<td colspan="2">Tindakan Medis
+			<select id="tindakan"  class="form-select">
+				<option value="_" selected ></option>
+				
+			</select>
+		</td>
+	<tr>
+	<tr>
+		<td align="right" class="col-sm-6">
+			<button type="submit" class="btn btn-outline-primary" onclick="aturulang()" style="width: 130px;">Atur Ulang</button>
+		</td>
+		<td align="left">
+			<button type="submit" class="btn btn-primary" onclick="cari()" style="width: 130px;">Cari</button>
+		</td>
+	</tr>
+</table>
+
+
+<script>
+	
+	$.ajax ({
+		url: '/api/caridokter/',
+		type: 'get',
+		contentType: 'application/json',
+		success: function(lokasi) {
+			var str = '<option value="_" selected ></option>';
+			for(i=0; i<lokasi.length; i++) {
+				str += '<option value="'+ lokasi[i].name +'">'+ lokasi[i].name +'</option>'
+			}
+			$('#location').html(str)
+		}
+	})
+	
+	$.ajax ({
+		url: '/api/caridokter/specialization',
+		type: 'get',
+		contentType: 'application/json',
+		success: function(spec) {
+			var str2 = '<option selected value="" style="color: grey;" >--Pilih--</option>';
+			for(i=0; i<spec.length; i++) {
+				str2 += '<option value="'+ spec[i].name +'">'+ spec[i].name +'</option>'
+			}
+			$('#specialization').html(str2)
+		}
+	})
+	
+	$.ajax ({
+		url: '/api/caridokter/tindakan',
+		type: 'get',
+		contentType: 'application/json',
+		success: function(treat) {
+			var str3 = '<option value="_" selected ></option>';
+			for(i=0; i<treat.length; i++) {
+				str3 += '<option value="'+ treat[i].name +'">'+ treat[i].name +'</option>'
+			}
+			$('#tindakan').html(str3)
+		}
+	})
+	
+</script>
+
+</div>
+
+</html>

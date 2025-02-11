@@ -1,0 +1,40 @@
+<!Doctype html>
+<html lang='en' xmlns:th='http://www.thymeleaf.org'
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+<div layout:fragment="content">
+
+<!--<head>
+	<link rel="stylesheet" href="/css/bootstrap.min.css">
+	
+	<script src="/js/jquery-3.6.0.min.js"></script>
+	<script src="/js/bootstrap.min.js"></script>
+
+</head>-->
+
+<form th:action="@{~/goldarah/save}" th:object="${goldarahform}" method="POST">
+<input type="hidden" th:field="*{Id}" th:value="${Id}">
+<table class="table">
+	<tr>
+		<td>
+			Code<br>
+			<input type="text" th:field="*{Code}" th:value="${Code}" style="width: 100%;">
+		</td>
+	</tr>
+	<tr>
+		<td>
+			Description<br>
+			<input type="text" th:field="*{Description}" th:value="${Description}" style="width: 100%;">
+		</td>
+	</tr>
+	<tr>
+		<td>
+		<button type="submit" class="btn btn-primary" style="float: right;">Simpan</button>
+		<button type = "button" class = "btn btn-warning" onclick = "tutupmodal()" style = "float:right; margin-right: 20px;">Batal</button>
+		</td>
+	</tr>
+</table>
+
+
+</div>
+</html>

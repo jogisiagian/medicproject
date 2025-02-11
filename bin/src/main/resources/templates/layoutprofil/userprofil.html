@@ -1,0 +1,427 @@
+<!Doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{fragments/layout}">
+
+<head>
+	<link rel="stylesheet" href="/css/bootstrap.min.css">
+	<link rel="stylesheet" href="/css/layoutprofil.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/11.1.9/sweetalert2.min.css"
+		integrity="sha512-cyIcYOviYhF0bHIhzXWJQ/7xnaBuIIOecYoPZBgJHQKFPo+TOBA+BY1EnTpmM8yKDU4ZdI3UGccNGCEUdfbBqw=="
+		crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+	<script src="/js/jquery-3.6.0.min.js"></script>
+	<script src="/js/bootstrap.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/11.1.9/sweetalert2.all.min.js"
+		integrity="sha512-IZ95TbsPTDl3eT5GwqTJH/14xZ2feLEGJRbII6bRKtE/HC6x3N4cHye7yyikadgAsuiddCY2+6gMntpVHL1gHw=="
+		crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+</head>
+
+<!-- Masuk ke dalam layout venny -->
+<div layout:fragment="content">
+
+	<body style="background-color: #D3D3D3;">
+
+		<!-- Navbar -->
+		<nav class="navbar navbar-expand-lg navbar-dark shadow" style="background-color: #F3F3F3;">
+			<div class="container">
+				<ol class="breadcrumb">
+					<li class="breadcrumb-item"><a href="index.html">Beranda</a></li>
+					<li class="breadcrumb-item"><a href="userprofil.html">Profil</a></li>
+					<!-- <li class="breadcrumb-item active" aria-current="tabprofil.html">Tab Profil</li> -->
+				</ol>
+			</div>
+		</nav>
+		<!-- Akhir Navbar -->
+
+		<div class="container">
+			<div class="main-body">
+
+				<br><br><br>
+
+				<!-- Start Row -->
+				<div class="row gutters-sm">
+					<!-- Start Column Kiri md-4 -->
+					<div class="col-md-4 mb-3">
+
+						<!-- Foto Profil -->
+						<div class="card">
+							<div class="card-body">
+								<div class="d-flex flex-column align-items-center text-center"
+									th:each="item:${customerdata}">
+									<img th:src="'/images/' + ${item.userprofil.ImagePath}" alt="avatar"
+										class="rounded-circle" width="150">
+									<div class="mt-3">
+										<h4 th:text="${item.userprofil.Fullname}"></h4>
+										<p class="text-secondary mb-1">Full Stack Developer</p>
+										<p class="text-muted font-size-sm">Kebayoran Baru, Jakarta Selatan</p>
+										<button class="btn btn-primary" onclick="editfoto(this.value)"
+											th:value="${item.Id}">Edit Foto</button>
+										<!-- <button class="btn btn-outline-primary">Hapus Foto</button> -->
+									</div>
+								</div>
+							</div>
+						</div>
+						<!-- End Foto Profil -->
+
+						<!-- Link Menu -->
+						<div class="card mt-3">
+							<ul class="list-group list-group-flush">
+								<li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
+									<a th:href="@{'/pasien/index_pasien'}">
+										<h6 class="mb-0">Pasien</h6>
+									</a>
+								</li>
+								<li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
+									<h6 class="mb-0">Pembelian Obat</h6>
+								</li>
+								<li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
+									<h6 class="mb-0">Rencana Kedatangan</h6>
+								</li>
+								<li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
+									<h6 class="mb-0">Riwayat Chat Dokter</h6>
+								</li>
+							</ul>
+						</div>
+						<!-- End Link Menu -->
+
+					</div>
+					<!-- End Column Kiri -->
+
+					<!-- Start Column Kanan md-8 -->
+					<div class="col-md-8" id="tabprofil">
+
+						<!-- Tab -->
+						<div class="tab-block">
+							<ul class="nav nav-tabs">
+								<li class="active">
+									<a href="#tabprofil" data-toggle="tab">Profil</a>
+								</li>
+								<li>
+									<a href="#tabalamat" data-toggle="tab">Alamat</a>
+								</li>
+								<li>
+									<a href="#tabpembayaran" data-toggle="tab">Pembayaran</a>
+								</li>
+							</ul>
+						</div>
+						<!-- End Tab -->
+
+						<br>
+
+						<!-- Edit Data Pribadi -->
+						<div class="card mb-3">
+							<div class="card-body" id="datapribadi" th:each="item:${customerdata}">
+								<h5>Data Pribadi</h5><br>
+								<div class="row" id="tampilnama">
+									<div class="col-sm-3">
+										<h6 class="mb-0">Nama Lengkap</h6>
+									</div>
+									<div class="col-sm-9 text-secondary" th:text="${item.userprofil.Fullname}">
+
+									</div>
+								</div>
+								<hr>
+								<div class="row" id="tampilttl">
+									<div class="col-sm-3">
+										<h6 class="mb-0">Tanggal Lahir</h6>
+									</div>
+									<div class="col-sm-9 text-secondary" th:text="${item.Dob}">
+										<!-- userprofil dari customer models -->
+
+									</div>
+								</div>
+								<hr>
+								<div class="row" id="tampilhp">
+									<div class="col-sm-3">
+										<h6 class="mb-0">No Handpone</h6>
+									</div>
+									<div class="col-sm-9 text-secondary" th:text="${item.userprofil.MobilePhone}">
+
+									</div>
+								</div>
+								<hr>
+								<div class="row">
+									<div class="col-sm-12">
+										<button class="btn btn-info" th:value="${item.Id}"
+											onclick="edittabprofil(this.value)">Edit</button>
+									</div>
+								</div>
+							</div>
+						</div>
+						<!-- End Edit Data Pribadi -->
+
+						<!-- Edit Data Akun -->
+						<div class="card mb-3">
+							<div class="card-body" id="dataakun" th:each="item:${udata}">
+								<h5>Data Akun</h5><br>
+								<div class="row" id="tampilemail">
+									<div class="col-sm-3">
+										<h6 class="mb-0">Email</h6>
+									</div>
+									<div class="col-sm-7 text-secondary" th:text="${item.Email}">
+									</div>
+									<div class="col-sm-2">
+										<button class="btn btn-info" th:value="${item.Id}"
+											onclick="editemail(this.value)">Edit</button>
+									</div>
+								</div>
+								<hr>
+
+								<div class="row" id="tampilpassword">
+									<div class="col-sm-3">
+										<h6 class="mb-0">password</h6>
+									</div>
+									<div class="col-sm-7 text-secondary" th:text="${item.Password}">
+									</div>
+									<div class="col-sm-2">
+										<button class="btn btn-info" th:value="${item.Id}"
+											onclick="editdataakun(this.value)">Edit</button>
+									</div>
+								</div>
+								<hr>
+							</div>
+						</div>
+						<!-- End Data Akun -->
+
+
+					</div>
+					<!-- End Column Kanan md-8 -->
+				</div>
+
+			</div>
+		</div>
+
+		<script>
+
+			// Start Edit Tab Profil
+			function edittabprofil(id) {
+				//window.open('/m_biodata/form','_self')
+				console.log("*******" + id)
+				$.ajax({
+					url: '/api/customer/' + id,
+					type: 'get',
+					contentType: 'application/json',
+					success: function (result) {
+						console.log(result)
+						var str = '<table class="table">'
+						str += '<tr>'
+						str += '<td>Fullname</td>'
+						str += '<td><input class="form-control "type="text" id="fullname" value="' + result[0].fullname + '"></td>'
+						str += '</tr>'
+						str += '<tr>'
+						str += '<td>Tanggal Lahir</td>'
+						str += '<td><input class="form-control" type="text" id="tanggallahir" value="' + result[0].dob + '"></td>'
+						str += '</tr>'
+						str += '<tr>'
+						str += '<td>No HP</td>'
+						str += '<td><input class="form-control" type="number" id="mobilephone" value="' + result[0].mobile_phone + '"></td>'
+						str += '</tr>'
+						str += '<tr>'
+						str += '<td colspan="2"><button class="btn btn-primary" onclick="updatetabprofil(this.value)" value="' + result[0].id + '">Update</button></td>'
+						str += '</tr>'
+						str += '</table>'
+
+						$('#mymodal').modal('show')
+						$('.modal-title').html('Edit Data Profil')
+						$('.modal-body').html(str)
+					}
+				})
+			}
+			// End Edit Tab Profil
+
+			//Start Update Tab Profil
+			function updatetabprofil(id) {
+
+				var data = '{'
+				data += '"fullname":"' + $('#fullname').val() + '",'
+				data += '"mobile_phone":"' + $('#mobilephone').val() + '"'
+				data += '}'
+				console.log(data)
+
+				$.ajax({
+					url: '/api/customer/biodata' + id,
+					type: 'put',
+					data: data,
+					contentType: 'application/json',
+					success: function (result) {
+						console.log(result)
+						reloaddata()
+						$('#mymodal').modal('hide')
+						Swal.fire(
+							'Update Data Berhasil',
+							'Data User Sudah Terupdate',
+							'Success'
+						)
+					},
+					error: function (res) {
+						Swal.fire(
+							'Update Data Gagal',
+							'Data User Tidak Berhasil di Update',
+							'Error'
+						)
+					}
+
+				})
+				var data = '{'
+				data = '"dob":"' + $('#tanggallahir').val() + '"'
+				data = '}'
+				console.log(data)
+				$.ajax({
+					url: '/api/customer/customer' + id,
+					type: 'put',
+					data: data,
+					contentType: 'application/json',
+					success: function (result) {
+						console.log(result)
+						reloaddata()
+						$('#mymodal').modal('hide')
+						Swal.fire(
+							'Update Data Berhasil',
+							'Data User Sudah Terupdate',
+							'Success'
+						)
+					},
+					error: function (res) {
+						Swal.fire(
+							'Update Data Gagal',
+							'Data User Tidak Berhasil di Update',
+							'Error'
+						)
+					}
+
+				})
+				
+			}
+			// End Update Tab Profil
+
+			// Start editemail
+			function editemail(id) {
+				$.ajax({
+					url: '/api/customer/akun/' + id,
+					type: 'get',
+					contentType: 'application/json',
+					success: function (result) {
+						console.log(result)
+						var str = '<table class="table">'
+						str += '<h6>'
+						str += "Masukkan alamat email yang baru"
+						str += '</h6>'
+						str += '<tr>'
+						str += '<td>Email*</td>'
+						str += '<td><input class="form-control "type="email" id="email" name ="Email" value="' + result.email + '"><br><i><span class="valid" id="val_email"></span></i></td>'
+						str += '</tr>'
+						str += '<tr>'
+						str += '<td colspan="2"><button class="btn btn-primary" onclick="">Ubah Email</button></td>'
+						str += '</tr>'
+						str += '</table>'
+
+						$('#mymodal').modal('show')
+						$('.modal-title').html('Ubah Email')
+						$('.modal-body').html(str)
+					}
+				})
+			}
+			// End Edit Email
+
+			// Start Kirim OTP
+			function kirimotp() {
+				if ($("#email").val() == "") {
+					$("#val_email").html("*Email wajib diisi");
+				} else {
+					var email = $('#email').val()
+					sendotp(email);
+
+				}
+			}
+			// End Kirim OTP
+
+			// Start Send OTP
+			function sendotp(email) {
+				$.ajax({
+					url: '/api/users/cekemail/' + email,
+					type: 'get',
+					contentType: 'application/json',
+					success: function (result) {
+						if (result == 0) {
+							finemail = email;
+							var str = '<table class="table">'
+							str += '<tr>'
+							str += '<td  align="center">Masukkan kode OTP yang telah dikirimkan ke email anda</td>'
+							str += '</tr>'
+							str += '<tr>'
+							str += '<td  align="center"><input type="text" id="otp"><br><i><span class="valid" id="val_otp"</span></i></td>'
+							str += '</tr>'
+							str += '<tr>'
+							str += '<td  align="center" id="otpkirimulang">Kirim ulang kode OTP dalam <span id="otpexpired"></span></td>'
+							str += '</tr>'
+							str += '<tr>'
+							str += '<td colspan="2"  align="center"><button class="btn btn-primary" onClick="konfirmasiotp()">Konfirmasi OTP</button></td>'
+							str += '</tr>'
+							str += '</table>'
+
+							$('#mymodal').modal('show')
+							$('.modal-title').html('Verifikasi E-mail')
+							$('.modal-body').html(str)
+							otpexp();
+						} else {
+							$("#val_email").html("*Email sudah terdaftar");
+
+						}
+					}
+				})
+			}
+			// End Send OTP
+
+
+
+			function editdataakun(id) {
+				//window.open('/m_biodata/form','_self')
+				$.ajax({
+					url: '/api/customer/akun/' + id,
+					type: 'get',
+					contentType: 'application/json',
+					success: function (result) {
+						console.log(result)
+						var str = '<table class="table">'
+						str += '<tr>'
+						str += '<td>Email</td>'
+						str += '<td><input class="form-control "type="text" id="email" value="' + result.email + '"></td>'
+						str += '</tr>'
+						str += '<tr>'
+						str += '<td>Password</td>'
+						str += '<td><input class="form-control" type="password" id="password" value="' + result.password + '"></td>'
+						str += '</tr>'
+						str += '<tr>'
+						str += '<td colspan="2"><button class="btn btn-primary" onclick="">Update</button></td>'
+						str += '</tr>'
+						str += '</table>'
+
+						$('#mymodal').modal('show')
+						$('.modal-title').html('Edit Data Akun')
+						$('.modal-body').html(str)
+					}
+				})
+			}
+
+			function editfoto(id) {
+				//window.open('/m_biodata/form','_self')
+				$.ajax({
+					url: '/layoutprofil/editfoto/' + id,
+					type: 'get',
+					contentType: 'html',
+					success: function (result) {
+						console.log(result)
+						$('#mymodal').modal('show')
+						$('.modal-title').html('Edit Foto')
+						$('.modal-body').html(result)
+					}
+				})
+			}
+
+		</script>
+
+		<br><br>
+	</body>
+</div>
+
+</html>

@@ -1,0 +1,159 @@
+div.menu {
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1), 0 3px 10px 0 rgba(0, 0, 0, 0.1);
+  display: block;
+}
+
+div.menu img {
+  width: 100%;
+  height: auto;
+  padding: 20px;
+}
+
+.menu p {
+	font-weight: bold;
+	text-decoration: none;
+	color: rgb(0, 128, 255);
+	font-size: 14px;
+}
+
+.menu:hover {
+	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+	cursor: pointer;
+}
+
+.kolom {
+	min-width: 180px;
+	margin: 0px 50px 50px 10px;
+}
+
+/* Fixed sidenav, full height */
+.sidenav {
+  height: 100%;
+  width: 200px;
+  position: relative;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  background-color: #B8E4F0;
+  overflow-x: hidden;
+  padding-top: 30px;
+  padding-top: 30px;
+  float: left;
+  transition: auto;
+}
+
+/* Style the sidenav links and the dropdown button */
+.sidenav a, .dropdown-btn {
+  padding: 16px 8px 6px 20px;
+  text-decoration: none;
+  font-size: 14px;
+  color: rgb(70, 70, 255);
+  display: block;
+  border: none;
+  background: none;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  outline: none;
+  margin: 0;
+  font-weight: 600;
+}
+
+/* On mouse-over */
+.sidenav a:hover, .dropdown-btn:hover {
+  color: #f1f1f1;
+}
+
+/* Main content */
+.main {
+  margin-left: 200px; /* Same as the width of the sidenav */
+  font-size: 20px; /* Increased text to enable scrolling */
+  padding: 0px 10px;
+}
+
+/* Add an active class to the active dropdown button */
+
+/* Dropdown container (hidden by default). Optional: add a lighter background color and some left padding to change the design of the dropdown content */
+.dropdown-container {
+  display: none;
+  background-color: #262626;
+  padding-left: 8px;
+}
+
+/* Optional: Style the caret down icon */
+.fa-caret-down {
+  float: right;
+  padding-right: 8px;
+}
+
+/* Some media queries for responsiveness */
+@media screen and (max-height: 450px) {
+  .sidenav {padding-top: 15px;}
+  .sidenav a {font-size: 18px;}
+}
+
+.valid {
+	color: red;
+	font-size: 10pt;
+}
+
+.navbarcaridok {
+	background-color: #EEF2FF;
+	padding: 15px;
+}
+
+.navbarcaridok ul {
+	padding-bottom: 5px;
+}
+
+.navbarcaridok ul li {
+	list-style-type: none; 
+	float: left;
+	margin: 0;
+	font-weight: 500;
+	font-size: 14px;
+}
+
+.hasil {
+	padding: 30px 100px;
+}
+
+.hasil2 {
+	padding: 0px 80px;
+}
+
+div.kolomdokter {
+  border: 1px solid rgb(0, 172, 255);
+  border-radius: 5px;
+  display: block;
+  padding: 10px 20px;
+}
+
+.jarak {
+	padding: 30px 0px;
+	width: 100%;
+}
+
+.kolom2 {
+	padding: 30px 30px;
+}
+
+.pdoctor {
+	border-radius: 50%;
+}
+
+.header_toggle {
+    color: var(--first-color);
+    font-size: 1.5rem;
+    cursor: pointer
+}
+
+.sidename {
+	display: inline-block;
+}
+
+.icon {
+	font-size: 17px;
+}

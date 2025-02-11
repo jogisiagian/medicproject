@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<htmllang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<div layout:fragment="content">
+	<form th:action="@{~/hubunganpasien/save}" th:object="${hubpasien_form}" method="POST">
+	<input type="hidden" th:field="*{Id}" th:value="${Id}">
+	<table class="table">
+		<tr>
+			<td>
+				Nama*<br>
+				<input type="text" th:field="*{Name}" th:value="${Name}" id="inputnama" autocomplete="off" oninput="cekValidData()" required><br>
+				<i><span class="text-danger" id="val_pass"></span></i>
+			</td>
+		</tr>
+		<tr>
+			<td class="d-flex justify-content-end">
+				<button type="button" class="btn btn-primary me-3" onclick="closemodals()">Batal</button>
+				<button type="submit" class="btn btn-primary" th:value="${Id}">Simpan</button>
+			</td>
+		</tr>
+	</table>
+	</form>
+</div>
+</html>

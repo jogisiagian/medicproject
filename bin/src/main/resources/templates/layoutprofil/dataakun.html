@@ -1,0 +1,24 @@
+<!Doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+<div layout:fragment="content">
+
+	<form th:action="@{~/layoutprofil/save}" th:object="${dataakunform}" method="POST" enctype="multipart/form-data">
+		<input type="hidden" th:field="*{Id}" th:value="${Id}">
+		<table>
+			<tr>
+				<td>Email</td>
+				<td><input type="email" th:field="*{Email}" th:value="${Email}" class="form-control"></td>
+			</tr>
+			<tr>
+				<td>Password</td>
+				<td><input type="password" th:field="*{Password}" th:value="${Password}" class="form-control"></td>
+			</tr>
+			<tr>
+				<td><button type="submit" class="btn btn-primary" th:value="${Id}">Simpan</button></td>
+			</tr>
+		</table>
+	</form>
+</div>
+
+</html>

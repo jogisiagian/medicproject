@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang = "en" xmlns:th = "http://www.thymeleaf.org"
+		xmlns:layout = "http://www.ultraq.net.nz/thymeleaf/layout"
+		>
+		
+<div layout:fragment = "content">
+
+<form th:action = "@{~/carapembayaran/delete/{id}}" th:object = "${deleteform}">
+<input type = "hidden" th:field = "*{id}" th:value = "${id}">
+
+<table class = "table">
+	<tr>
+		<td>Anda akan menghapus cara pembayaran ini ?</td>
+	</tr>
+	<tr>
+		<td colspan = '2'>
+		<button type = "submit" class = "btn btn-info" style = "float:right" >Ya</button>
+		<button type = "button" class = "btn btn-warning" onclick = "tutupmodal()" style = "float:right; margin-right: 40px;">Batal</button>
+		</td>
+	</tr>
+</table>
+
+
+</form>
+</div>
+</html>

@@ -1,0 +1,166 @@
+<!Doctype html>
+<html lang='en' xmlns:th='http://www.thymeleaf.org'
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{fragments/layout}">
+	
+<div layout:fragment="content">
+
+<head>
+	<link rel="stylesheet" href="/css/tableouterborder.css">
+</head>
+
+<div>
+<h2 class="bg-primary p-2">GOLONGAN DARAH</h2>
+</div>
+
+<div style="margin-top: 30px;" class="container">
+	<table style="width: 100%;">
+		<tr>
+			<td>
+				<form style="padding-left: 5px;">
+					<input type="text" name="search" onkeypress="caridarah(event)" id="searchbar" placeholder="Search by code" style="width: 300px; margin-left: 0px;">
+					
+				</form>
+			</td>
+			<td style="padding-right: 5px;"><button class="btn btn-primary" onclick="openform()" style="float: right;">Tambah</button></td>
+		</tr>
+	</table>
+</div>
+
+<div class="container" style="margin-top: 50px;">
+	<table class="table table-condensed">
+		<thead class="bg-primary">
+			<tr align="center">
+				<th>Code</th>
+				<th>Description</th>
+				<th>#</th>
+			</tr>
+		</thead>
+		<tbody id="data-content">
+			
+		</tbody>
+	</table>
+</div>
+
+<script>
+reloaddata();
+
+function reloaddata() {
+	$.ajax({
+		url: "/GolDarah/api/",
+		type: "get",
+		contentType: "application/json",
+		success: function (result) {
+			//console.log(result)
+			var str = "";
+			for (i = 0; i < result.length; i++) {
+				str += "<tr align='center'>";
+				str += "<td>" + result[i].code + "</td>";
+				str += "<td>" + result[i].description + "</td>";
+				str += "<td>";
+				str += "<button class = 'btn btn-info' onclick = 'openedit(this.value)' value = '" + result[i].id + "'>U</button>";
+				str += "<button class = 'btn btn-danger' onclick = 'formdelete(this.value)' value = '" + result[i].id + "'>H</button>";
+				str += "</td>"
+				str += "</tr>";
+			}
+			$("#data-content").html(str);
+		}
+	})
+}
+function openform(){
+	//window.open('/goldarah/form/','_self')
+	$.ajax({
+		url:'/goldarah/form',
+		type:'get',
+		contentType:'html',
+		success:function(result){
+			//console.log(result)
+			$('#mymodal').modal('show')
+			$('.modal-title').html('Tambah Golongan Darah')
+			$('.modal-body').html(result)
+		}
+	})
+}
+function openedit(id){
+	//window.open('/goldarah/edit/'+id,'_self')
+	$.ajax({
+		url:'/goldarah/edit/'+id,
+		type:'get',
+		contentType:'html',
+		success:function(result){
+			//console.log(result)
+			$('#mymodal').modal('show')
+			$('.modal-title').html('Ubah Golongan Darah')
+			$('.modal-body').html(result)
+		}
+	})
+	$('#mymodal').modal('hide')
+}
+function delete_(id){
+	window.open('/goldarah/delete/'+id,'_self')
+}
+function tutupmodal(){
+	$('#mymodal').modal('hide')
+}
+function caridarah(e) {
+	var code = $("#searchbar").val()
+	if(code == "") {
+		reloaddata();
+		//code="_"
+	}
+	//alert(email + " ---- " + password)
+	if (e.keyCode === 13) {
+		e.preventDefault();
+		$.ajax({
+			url: "/goldarah/caridarah/" + code,
+			type: "get",
+			contentType: "html",
+			success: function (result) {
+				//console.log(result)
+				var str = "";
+				for (i = 0; i < result.length; i++) {
+					str += "<tr>";
+					str += "<td align='center'>" + result[i].code + "</td>";
+					str += "<td align='center'>" + result[i].description + "</td>";
+					str += "<td align='center'>";
+					str += "<button class = 'btn btn-primary' onclick = 'openedit(this.value)' value = '" + result[i].id + "'>U</button>";
+					str += "<button class = 'btn btn-danger' onclick = 'delete_(this.value)' value = '" + result[i].id + "'>H</button>";
+					str += "</td>"
+					str += "</tr>";
+				}
+				$("#data-content").html(str);
+			}
+		})
+	}
+	return false;
+}
+function formdelete(id) {
+	$.ajax({
+		url: '/GolDarah/api/' + id,
+		type: 'get',
+		contentType: 'application/json',
+		success: function (result) {
+			//console.log(result)
+
+			var str = "<table class = 'table'>"
+			str += "<tr>"
+			str += "<td>Anda akan menghapus golongan darah " + result.code + " ? </td>"
+			str += "<tr>"
+			str += "<td colspan = '2'><button class = 'btn btn-warning' onclick = 'tutupmodal()'style = 'float:right'>Tidak</td>"
+			str += "<td colspan = '2'><button class = 'btn btn-info' onclick = 'delete_(" + id + ")'style = 'float:right; margin-right: 40px;'>Ya</td>"
+			str += "</tr>"
+			str += "</table>"
+
+			$("#mymodal").modal("show")
+			$(".modal-title").html("Hapus !")
+			$(".modal-body").html(str)
+
+		}
+	})
+}
+function tutupmodal() {
+	$('#mymodal').modal('hide')
+}
+</script>
+</div>
+</html>

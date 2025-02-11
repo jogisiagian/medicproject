@@ -1,0 +1,256 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{fragments/layoutprofile}">
+<div layout:fragment="contentpasien">
+	<h3>Daftar Pasien</h3>
+	<!--card daftar pasien-->
+	<div class="card">
+		<div class="card-body">
+			<!--Control Atas-->
+			<div class="d-flex flex-row justify-content-between">
+			  <div class="p-2">
+				  	<div class="input-group mb-3">
+					  <input type="search" class="form-control" placeholder="Cari nama pasien" aria-label="Search" aria-describedby="button-addon2">
+					  <button class="btn btn-primary btn-sm" type="button" id="button-addon2"><i class="bi bi-search"></i></button>
+					</div>
+			  </div>
+			  <div class="p-2">
+				  <div class="input-group mb-3">
+					  <label class="col-form-label me-2">Urutkan</label>
+					  <select class="form-select" aria-label="Default select example">
+						  <option selected>Nama</option>
+						  <option value="1">One</option>
+						  <option value="2">Two</option>
+						  <option value="3">Three</option>
+						</select>
+				  </div>
+			  </div>
+			</div>
+			<!--akhir control atas-->
+			<!--control bawah-->
+			<div class="d-flex flex-row">
+			  <div class="p-2">
+			  	<button type="button" class="btn btn-outline-secondary" id="multipledelete">        
+                	<i class="bi bi-trash"></i>Hapus
+              	</button>
+			  </div>
+			  <div class="p-2 ms-auto">
+			  	<a href="#" class="link-info">A-Z</a><span class="border-start border-2 border-secondary ms-2"></span>
+			  </div>
+			  <div class="p-2">
+			  	<a href="#" class="link-info">10</a><span class="border-start border-2 border-secondary ms-2"></span>
+			  </div>
+			  <div class="p-2">
+			  	<a action="#" onclick="openformpasien()" class="link-info"><i class="bi bi-plus-lg"></i> Tambah</a>
+			  </div>
+			</div>
+			<!--akhir control bawah-->
+		</div>
+	</div>
+	<!--data combogroup-->
+	<div class="card">
+		<div class="card-body">
+			<ul class="list-group" id="data-content">
+			  ...
+			</ul>
+		</div>
+		<div class="card-body">
+			<nav aria-label="Page navigation example">
+			  <ul class="pagination">
+			    <li class="page-item"><a class="page-link" href="#">Previous</a></li>
+			    <li class="page-item"><a class="page-link" href="#">1</a></li>
+			    <li class="page-item"><a class="page-link" href="#">2</a></li>
+			    <li class="page-item"><a class="page-link" href="#">3</a></li>
+			    <li class="page-item"><a class="page-link" href="#">Next</a></li>
+			  </ul>
+			</nav>
+		</div>
+	</div>
+	<script>
+	
+		reloaddata();
+	
+		function openformpasien() {
+			//window.open('/hubunganpasien/form_hubpasien','_self')
+			$.ajax({
+    			url:'/pasien/form_pasien',
+    			type:'get',
+    			contentType:'html',
+    			success:function(result) {
+        			console.log(result)
+        			$('#mymodal').modal('show')
+        			$('.modal-title').html('TAMBAH PASIEN')
+        			$('.modal-body').html(result)
+    			}
+			})	
+		}
+		
+		function reloaddata() {
+			$.ajax({
+				url: "/pasien/api/",
+				type: "get",
+				contentType: "application/json",
+				success: function (result) {
+					console.log(result)
+					var str = "";
+					var today = new Date();
+					for (i = 0; i < result.length; i++) {
+						str += '<li class="d-flex flex-row justify-content-between list-group-item">'
+						str += '<div class="p-2">'
+						str += '<input class="form-check-input me-1" name="pasien" type="checkbox" value="'+result[i].id+'" id="checkitem">'
+						str += '</div>'
+						str += '<div class="p-2">'
+						str += '<h5>'+result[i].fullname+'</h5>'
+						var ultah = new Date(result[i].dob);
+						var year = 0;
+						if (today.getMonth() < ultah.getMonth()) {
+							year = 1;
+						} else if ((today.getMonth() == ultah.getMonth()) && today.getDate() < ultah.getDate()) {
+							year = 1;
+						}
+						var age = today.getFullYear() - ultah.getFullYear() - year;
+				 
+						if(age < 0){
+							age = 0;
+						}
+						str += '<p>'+result[i].name+', <span>'+age+'</span> Tahun</p>'
+						str += '<p><span>'+result[i].chatan+'</span> Chat Online, <span>'+result[i].janjian+'</span> Janji Dokter</p>'
+						str += '</div>'
+						str += '<div class="p-2">'
+						str += '<button type="button" class="btn btn-primary me-3" onclick="openedit('+result[i].id+')">Ubah</button>'
+						str += '<button type="button" class="btn btn-danger" onclick="delete_('+result[i].id+')">Hapus</button>'	
+	                	str += '</li>'
+	                	
+					}
+					$("#data-content").html(str);
+				}
+			})
+		}
+		
+		function openedit(id) {
+			//window.open('/hubunganpasien/edit/'+id,'_self')
+			console.log(id);
+			$.ajax({
+    			url:'/pasien/edit/'+id,
+    			type:'get',
+    			contentType:'html',
+    			success:function(result) {
+        			console.log(result)
+        			$('#mymodal').modal('show')
+        			$('.modal-title').html('UBAH PASIEN')
+        			$('.modal-body').html(result)
+    			}
+			})
+		}
+		
+		function closemodals() {
+			$('#mymodal').modal('hide')
+		}
+		
+		function delete_(id) {
+			$.ajax({
+				url: '/pasien/api/' + id,
+				type: 'get',
+				contentType: 'application/json',
+				success: function (result) {
+					console.log(result)
+
+					var str ='';
+					str += '<table>'
+					str += '<tr>'
+					str += '<td>Anda Yakin ingin menghapus pasien</td>'
+					str += '</tr>'
+					str += '<tr>'
+					str += '<td class="ps-2"><b>'+result.customer.userprofil.fullname+'</b></td>'
+					str += '</tr>'
+					str += '<tr>'
+					str += '<td>'
+					str += 'Riwayat medis pasien akan tetap tersimpan,<br>'
+					str += 'namun Anda tidak dapat lagi membuat janji<br>'
+					str += 'dokter/chat online untuk pasien ini'
+					str += '</td>'
+					str += '</tr>'
+					str += '<tr>'
+					str += '<td class="d-flex justify-content-center pt-2">'
+					str += '<button type="button" class="btn btn-primary me-3" onclick="closemodals()">Batal</button>'
+					str += '<button type="button" class="btn btn-primary" onclick="hapus('+result.id+')">Hapus</button>'
+					str += '</td>'
+					str += '</tr>'
+					str += '</table>'
+
+					$('#mymodal').modal('show')
+					$('.modal-title').html('HAPUS PASIEN !')
+					$('.modal-body').html(str)
+
+				}
+			})
+			//var idk = id;
+			//var names = $("#nameget").val();
+			//console.log(names);	
+		}
+		
+		function hapus(id) {
+			window.open('/pasien/delete/'+id,'_self')
+		}
+		
+		//multiple delete
+		$('#multipledelete').click(function(){
+			$.ajax({
+				url: '/pasien/api/',
+				type: 'get',
+				contentType: 'application/json',
+				success: function (result) {
+					console.log(result)
+					var id = $('#checkitem:checked').map(function(){
+						return $(this).val()
+					}).get();
+					console.log(id);
+					var str ='';
+					str += '<table>'
+					str += '<tr>'
+					str += '<td>Anda Yakin ingin menghapus pasien</td>'
+					str += '</tr>'
+					for (i = 0; i < id.length; i++) {
+						for (j = 0; j < result.length; j++) {
+							if(id[i]==result[j].id) {
+								str += '<tr>'
+								str += '<td class="ps-2"><b>'+result[j].fullname+'</b></td>'
+								str += '</tr>'
+							}
+						}
+					}
+					str += '<tr>'
+					str += '<td>'
+					str += 'Riwayat medis pasien akan tetap tersimpan,<br>'
+					str += 'namun Anda tidak dapat lagi membuat janji<br>'
+					str += 'dokter/chat online untuk pasien ini'
+					str += '</td>'
+					str += '</tr>'
+					str += '<tr>'
+					str += '<td class="d-flex justify-content-center pt-2">'
+					str += '<button type="button" class="btn btn-primary me-3" onclick="closemodals()">Batal</button>'
+					str += '<button type="button" class="btn btn-primary" onclick="hapusmulti('+id+')">Hapus</button>'
+					str += '</td>'
+					str += '</tr>'
+					str += '</table>'
+					
+					$('#mymodal').modal('show')
+					$('.modal-title').html('HAPUS PASIEN !')
+					$('.modal-body').html(str)
+
+				}
+			})
+		})
+		
+		function hapusmulti() {
+			var id = $('#checkitem:checked').map(function(){
+						return $(this).val()
+					}).get().join('');
+			console.log(id);
+			//for (i = 0; i < id.length; i++) {
+				//window.open('/pasien/delete/'+id[i],'_self')
+			//}
+			window.open('/pasien/delete/multi/'+id,'_self')
+		}
+	</script>
+</div>
+</html>

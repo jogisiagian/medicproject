@@ -1,0 +1,119 @@
+<!Doctype html>
+<html>
+<head>
+	<title>Login</title>
+	<link rel="stylesheet" href="/css/login.css">
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css"
+	integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous" />
+</head>
+<body>
+<section class="login">
+	
+	<!--<form action="/users/ceklogin" onsubmit="return login()" method="post" name="formid">-->
+		<table class="table">
+			<tr>
+				<td><i><span>Email*</span></i><br><input type="email"  title="Username required" placeholder="" id="email" name="Email" style="width:100%;"><br><i><span class="valid" id="val_email"></span></i></td>
+			</tr>
+			<tr>
+				<td><i><span>Password*</span></i><br><input type="password"  title="Password required" placeholder="" id="password" name="Password" style="width:89%;"><button class="btn border border-left-0" type="button" onclick="password_show_hide();"><i class="fas fa-eye" id="show_eye" style="color: blue;"></i><i class="fas fa-eye-slash d-none" id="hide_eye" style="color: blue;"></i>
+				</button>
+				<br><i><span class="valid" id="val_password"></span></i>
+				</td>
+			</tr>
+			<tr>
+				<td align="center"><button type="submit" class="btn btn-primary" onclick="login2()">Masuk</button></td>
+			</tr>
+			<tr>
+				<td>
+					<div class="olvido" align="center">
+		        	<div class="col"><a href="#" onclick="openlupapassword()">Lupa Password?</a></div>
+		        	<div class="col">atau</div>
+		            <div class="col"><a href="#" onclick="opendaftar()">Belum memiliki akun? Daftar</a></div>
+		        </div>
+				</td>
+			</tr>
+        </table>
+   	<!--</form>-->
+</section>
+<script>
+function login(){
+	var email = document.forms["formid"]["Email"].value;
+	var password = document.forms["formid"]["Password"].value;
+	//console.log("e:" +email)
+	//console.log("p: "+password)
+	if(email == "") {
+		$("#val_email").html("*Email wajib diisi");
+		return false;
+	} 
+	if(password == "") {
+		$("#val_password").html("*Password wajib diisi");
+		return false;
+		
+	}
+			
+}
+
+function login2(){
+	var email = $('#email').val();
+	var password = $('#password').val();
+	console.log("e:" +email)
+	console.log("p: "+password)
+	if(email == "") {
+		$("#val_email").html("*Email wajib diisi");
+		return false;
+	}
+	if(password == "") {
+		$("#val_password").html("*Password wajib diisi");
+		return false;
+		
+	} 
+	if (email!="" && password !=""){
+		$.ajax({
+			url: 'api/users/ceklogin/'+email+'/'+password,
+			type: 'get',
+			contentType: 'application/json',
+			success: function (test) {
+				console.log(test)
+			
+			if (test==true) {
+				alert("Berhasil Login")
+				location.reload();
+			} else {
+				alert("Email atau password salah")
+			}
+			}
+		})
+	}
+			
+}
+function openlupapassword() {
+	$.ajax({
+		url: '/users/lupapassword',
+		type: 'get',
+		contentType: 'html',
+		success: function (result) {
+			$('#mymodal').modal('show')
+			$('.modal-title').html('Lupa Password')
+			$('.modal-body').html(result)
+		}
+	})
+}
+
+function password_show_hide() {
+	var x = document.getElementById("password");
+	var show_eye = document.getElementById("show_eye");
+	var hide_eye = document.getElementById("hide_eye");
+	hide_eye.classList.remove("d-none");
+	if (x.type === "password") {
+		x.type = "text";
+		show_eye.style.display = "none";
+		hide_eye.style.display = "block";
+	} else {
+		x.type = "password";
+		show_eye.style.display = "block";
+		hide_eye.style.display = "none";
+	}
+}
+</script>
+</body>
+</html>

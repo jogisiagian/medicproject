@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang = "en" xmlns:th = "http://www.thymeleaf.org"
+		xmlns:layout = "http://www.ultraq.net.nz/thymeleaf/layout"
+		>
+		
+<div layout:fragment = "content">
+
+<form th:action = "@{~/carapembayaran/save}" th:object = "${carapembayaranform}" method = "POST">
+<input type = "hidden" th:field = "*{id}" th:value = "${id}">
+<table class = "table">
+	<tr>
+		<td>Nama*</td>
+		<td><input type = "text" th:field = "*{Nama}" th:value = "${Nama}" style="width: 100%;" class="form-control" required></td>
+	</tr>
+	<tr>
+		<td colspan = '2'>
+		<button type = "submit" class = "btn btn-info" style = "float:right">Simpan</button>
+		<button type = "button" class = "btn btn-warning" onclick = "tutupmodal()" style = "float:right; margin-right: 40px;">Batal</button>
+		</td>
+</table>
+</form>
+</div>
+</html>

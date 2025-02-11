@@ -1,0 +1,146 @@
+<!Doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{fragments/layout}">
+
+<head>
+	<link rel="stylesheet" href="/css/bootstrap.min.css">
+	<link rel="stylesheet" href="/css/layoutprofil.css">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
+
+	<script src="/js/jquery-3.6.0.min.js"></script>
+	<script src="/js/bootstrap.min.js"></script>
+</head>
+
+<!-- Masuk ke dalam layout venny -->
+<div layout:fragment="content">
+
+	<body style="background-color: #D3D3D3;">
+
+		<!-- Navbar -->
+		<nav class="navbar navbar-expand-lg navbar-dark shadow" style="background-color: #F3F3F3;">
+			<div class="container">
+				<ol class="breadcrumb">
+					<li class="breadcrumb-item"><a href="index.html">Beranda</a></li>
+					<li class="breadcrumb-item"><a href="userprofil.html">Profil</a></li>
+					<li class="breadcrumb-item active" aria-current="tabprofil.html">Tab Profil</li>
+				</ol>
+			</div>
+		</nav>
+		<!-- Akhir Navbar -->
+		
+		<div class="container">
+			<div class="main-body">
+
+				<br><br><br>
+
+				<!-- Start Row -->
+				<div class="row gutters-sm">
+					<!-- Start Column Kiri md-4 -->
+					<div class="col-md-4 mb-3">
+
+						<!-- Foto Profil -->
+						<div class="card">
+							<div class="card-body">
+								<div class="d-flex flex-column align-items-center text-center">
+									<img src="https://avataaars.io/?avatarStyle=Transparent&topType=ShortHairShortWaved&accessoriesType=Prescription02&hairColor=Black&facialHairType=Blank&clotheType=BlazerSweater&eyeType=Happy&eyebrowType=DefaultNatural&mouthType=Tongue&skinColor=Light"
+										alt="avatar" class="rounded-circle" width="150">
+									<div class="mt-3">
+										<h4>Diskapama</h4>
+										<p class="text-secondary mb-1">Full Stack Developer</p>
+										<p class="text-muted font-size-sm">Kebayoran Baru, Jakarta Selatan</p>
+										<button class="btn btn-primary" onclick="editfoto()">Edit Foto</button>
+										<button class="btn btn-outline-primary">Hapus Foto</button>
+									</div>
+								</div>
+							</div>
+						</div>
+						<!-- End Foto Profil -->
+
+						<!-- Link Menu -->
+						<div class="card mt-3">
+							<ul class="list-group list-group-flush">
+								<li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
+									<h6 class="mb-0">Pasien</h6>
+								</li>
+								<li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
+									<h6 class="mb-0">Pembelian Obat</h6>
+								</li>
+								<li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
+									<h6 class="mb-0">Rencana Kedatangan</h6>
+								</li>
+								<li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
+									<h6 class="mb-0">Riwayat Chat Dokter</h6>
+								</li>
+							</ul>
+						</div>
+						<!-- End Link Menu -->
+
+					</div>
+					<!-- End Column Kiri -->
+
+					<!-- Start Column Kanan md-8 -->
+					<div class="col-md-8">
+						<div id="contentpasien">
+							<section layout:fragment="contentpasien"></section>
+						</div>
+					</div>
+					<!-- End Column Kanan md-8 -->
+				</div>
+
+			</div>
+		</div>
+		
+		<script>
+		
+		function edittabprofil() {
+			//window.open('/m_biodata/form','_self')
+			$.ajax({
+				url: '/layoutprofil/tabprofil',
+				type: 'get',
+				contentType: 'html',
+				success: function (result) {
+					console.log(result)
+					$('#mymodal').modal('show')
+					$('.modal-title').html('Edit Data Profil')
+					$('.modal-body').html(result)
+				}
+			})
+		}
+		
+		function editdataakun() {
+			//window.open('/m_biodata/form','_self')
+			$.ajax({
+				url: '/layoutprofil/dataakun',
+				type: 'get',
+				contentType: 'html',
+				success: function (result) {
+					console.log(result)
+					$('#mymodal').modal('show')
+					$('.modal-title').html('Edit Data Akun')
+					$('.modal-body').html(result)
+				}
+			})
+		}
+		
+		function editfoto() {
+			//window.open('/m_biodata/form','_self')
+			$.ajax({
+				url: '/layoutprofil/editfoto',
+				type: 'get',
+				contentType: 'html',
+				success: function (result) {
+					console.log(result)
+					$('#mymodal').modal('show')
+					$('.modal-title').html('Edit Foto')
+					$('.modal-body').html(result)
+				}
+			})
+		}
+		
+		</script>
+		
+		<br><br>
+	</body>
+</div>
+
+</html>
