@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css"
+	integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous" />
+<div layout:fragment="content">
+
+	<h5>Tambah Lokasi</h5>
+
+	<table class = "table">
+		<tr>
+			<td><i><span id="val_level">Level Lokasi*</span></i><br><select name="level" id="level" style="width:100%;">
+			<option selected disabled>--Pilih--</option>
+			for (i = 0; i < role.length; i++) {
+					str+= '<option value="'+role[i].id+'">'+role[i].name+'</option>'
+				}
+		</tr>
+	</table>
+
+</html>

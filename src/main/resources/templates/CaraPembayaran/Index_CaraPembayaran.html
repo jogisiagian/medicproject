@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{fragments/layout}">
+
+<head>
+	<link rel="stylesheet" href="/css/tableouterborder.css">
+</head>
+
+<div layout:fragment="content">
+	<h2 class="bg-primary p-2">Cara Pembayaran</h2>
+
+	<div style="margin-top: 30px;" class="container">
+		<table style="width: 100%;">
+			<tr>
+				<td>
+					<form style="padding-left: 150px;">
+						<input type="text" name="search" onkeypress="caripembayaran(event)" id="searchbar"
+							placeholder="Search by nama" style="margin-left: 0px; width: 300px;" class="form-control"
+							autocomplete="off">
+
+					</form>
+				</td>
+				<td style="padding-right: 150px;">
+					<button class="btn btn-info" onclick="openform()" style="float:right;">Tambah</button>
+					<button class="btn btn-danger" onclick="lupapass()" style="float: right;">Lupa Password</button>
+				</td>
+
+			</tr>
+		</table>
+	</div>
+	<!--<input id = "searchbar" type = "text" name = "search" placeholder = "Search" onkeypress="caripembayaran(e)">-->
+
+
+	<div style="margin-top: 30px;" class="container">
+		<table class="table table-condensed" id="tablecp" style="width: 1000px;" align="center">
+			<thead class="bg-primary">
+				<tr>
+					<td onclick="sorting(0)" style="cursor: pointer; text-align: left;"><b>Nama</td>
+					<td style="text-align: right; padding-right: 45px;"><b>#</td>
+				</tr>
+			</thead>
+
+			<tbody id="data-content">
+
+			</tbody>
+		</table>
+	</div>
+
+	<script>
+		reloaddata();
+
+		function reloaddata() {
+			$.ajax({
+				url: "/carapembayaran/api/",
+				type: "get",
+				contentType: "application/json",
+				success: function (result) {
+					console.log(result)
+					var str = "";
+					for (i = 0; i < result.length; i++) {
+						str += "<tr>";
+						str += "<td>" + result[i].nama + "</td>";
+						str += "<td style='text-align: right;'>";
+						str += "<button class = 'btn btn-info' onclick = 'openedit(this.value)' value = '" + result[i].id + "'>U</button>";
+						str += "<button class = 'btn btn-danger' onclick = 'formdelete(this.value)' value = '" + result[i].id + "'>H</button>";
+						str += "</td>"
+						str += "</tr>";
+					}
+					$("#data-content").html(str);
+				}
+			})
+		}
+		function openform2() {
+			//window.open('/carapembayaran/form_carapembayaran/','_self')
+			$.ajax({
+				url: '/carapembayaran/form_carapembayaran/',
+				type: 'get',
+				contentType: 'html',
+				success: function (result) {
+					console.log(result)
+					$('#mymodal').modal('show')
+					$('.modal-title').html('Tambah')
+					$('.modal-body').html(result)
+				}
+			})
+		}
+
+		function openform() {
+			var str = '<table class = "table">'
+			str += '<tr>'
+			str += '<td>Nama*</td>'
+			str += '<td><input type = "text" style="width: 100%;" class="form-control" id = "nama" autocomplete="off" required><i><span class="valid" id="val_pembayaran"></span></i></td>'
+			str += '</tr>'
+			str += '<tr>'
+			str += '<td colspan = "2">'
+			str += '<button type = "submit" class = "btn btn-info" style = "float:right" onclick = "save()">Simpan</button>'
+			str += '<button type = "button" class = "btn btn-warning" onclick = "tutupmodal()" style = "float:right; margin-right: 40px;">Batal</button>'
+			str += '</td>'
+			str += '</table>'
+
+			$("#mymodal").modal("show")
+			$(".modal-title").html("Tambah")
+			$(".modal-body").html(str)
+		}
+
+		function save() {
+			//window.open('/carapembayaran/save/','_self')
+			var nama = $('#nama').val()
+			var data = '{'
+			data += '"nama":"' + $('#nama').val() + '"'
+			data += '}'
+
+			$.ajax({
+				url: "/carapembayaran/api/ceknama/" + nama,
+				type: "get",
+				contentType: "application/json",
+				success: function (result) {
+					console.log(result)
+					if (result != 0) {
+						$("#val_pembayaran").html("*Data sudah ada tod")
+					} else {
+						$.ajax({
+							url: "/carapembayaran/api/",
+							type: "post",
+							data: data,
+							contentType: "application/json",
+							success: function (hasil) {
+								reloaddata();
+								$("#mymodal").modal("hide")
+							}
+						})
+					}
+
+
+				}
+			})
+		}
+
+		function lupapass() {
+			//window.open('/carapembayaran/form_carapembayaran/','_self')
+			$.ajax({
+				url: '/carapembayaran/form_lupapassword/',
+				type: 'get',
+				contentType: 'html',
+				success: function (result) {
+					console.log(result)
+					$('#mymodal').modal('show')
+					$('.modal-title').html('Lupa Password')
+					$('.modal-body').html(result)
+				}
+			})
+		}
+
+		function lupapass2() {
+			//window.open('/carapembayaran/form_carapembayaran/','_self')
+			$.ajax({
+				url: '/carapembayaran/form_lupapassword2/',
+				type: 'get',
+				contentType: 'html',
+				success: function (result) {
+					console.log(result)
+					$('#mymodal').modal('hide')
+					$('#mymodal').modal('show')
+					$('.modal-title').html('Verifikasi Email')
+					$('.modal-body').html(result)
+				}
+			})
+		}
+
+		function lupapass3() {
+			//window.open('/carapembayaran/form_carapembayaran/','_self')
+			$.ajax({
+				url: '/carapembayaran/form_lupapassword3/',
+				type: 'get',
+				contentType: 'html',
+				success: function (result) {
+					console.log(result)
+					$('#mymodal').modal('hide')
+					$('#mymodal').modal('show')
+					$('.modal-title').html('Set Password')
+					$('.modal-body').html(result)
+				}
+			})
+		}
+
+		function password_show_hide() {
+			var x = document.getElementById("password");
+			var show_eye = document.getElementById("show_eye");
+			var hide_eye = document.getElementById("hide_eye");
+			hide_eye.classList.remove("d-none");
+			if (x.type === "password") {
+				x.type = "text";
+				show_eye.style.display = "none";
+				hide_eye.style.display = "block";
+			} else {
+				x.type = "password";
+				show_eye.style.display = "block";
+				hide_eye.style.display = "none";
+			}
+		}
+
+		function password_show_hide2() {
+			var x = document.getElementById("password2");
+			var show_eye2 = document.getElementById("show_eye2");
+			var hide_eye2 = document.getElementById("hide_eye2");
+			hide_eye2.classList.remove("d-none");
+			if (x.type === "password") {
+				x.type = "text";
+				show_eye2.style.display = "none";
+				hide_eye2.style.display = "block";
+			} else {
+				x.type = "password";
+				show_eye2.style.display = "block";
+				hide_eye2.style.display = "none";
+			}
+		}
+
+		function openedit(id) {
+			//window.open('/carapembayaran/edit/'+id,'_self')
+			$.ajax({
+				url: '/carapembayaran/edit/' + id,
+				type: 'get',
+				contentType: 'html',
+				success: function (result) {
+					console.log(result)
+					$('#mymodal').modal('show')
+					$('.modal-title').html('Ubah')
+					$('.modal-body').html(result)
+				}
+			})
+		}
+
+		function formdelete(id) {
+
+			$.ajax({
+				url: '/carapembayaran/api/' + id,
+				type: 'get',
+				contentType: 'application/json',
+				success: function (result) {
+					console.log(result)
+
+					var str = "<table class = 'table'>"
+					str += "<tr>"
+					str += "<td>Anda akan menghapus cara pembayaran " + result.nama + " ? </td>"
+					str += "<tr>"
+					str += "<td colspan = '2'><button class = 'btn btn-warning' onclick = 'tutupmodal()'style = 'float:right'>Tidak</td>"
+					str += "<td colspan = '2'><button class = 'btn btn-info' onclick = 'delete_(" + id + ")'style = 'float:right; margin-right: 40px;'>Ya</td>"
+					str += "</tr>"
+					str += "</table>"
+
+					$("#mymodal").modal("show")
+					$(".modal-title").html("Hapus !")
+					$(".modal-body").html(str)
+
+				}
+			})
+
+		}
+
+		function delete_(id) {
+			$.ajax({
+				url: "/carapembayaran/api/" + id,
+				type: "delete",
+				contentType: "application/json",
+				success: function (hasil) {
+					console.log(hasil)
+
+					reloaddata();
+					$("#mymodal").modal("hide")
+					//location.reload(1);
+				}
+			})
+		}
+
+		function tutupmodal() {
+			$('#mymodal').modal('hide')
+		}
+
+		function caripembayaran(e) {
+			var nama = $("#searchbar").val()
+			if (nama == "") {
+				reloaddata();
+			}
+			//alert(email + " ---- " + password)
+			if (e.keyCode === 13) {
+				e.preventDefault();
+				$.ajax({
+					url: "/carapembayaran/caripembayaran/" + nama,
+					type: "get",
+					contentType: "html",
+					success: function (result) {
+						console.log(result)
+						var str = "";
+						for (i = 0; i < result.length; i++) {
+							str += "<tr>";
+							str += "<td>" + result[i].nama + "</td>";
+							str += "<td style='text-align: right;'>";
+							str += "<button class = 'btn btn-info' onclick = 'openedit(this.value)' value = '" + result[i].id + "'>U</button>";
+							str += "<button class = 'btn btn-danger' onclick = 'delete_(this.value)' value = '" + result[i].id + "'>H</button>";
+							str += "</td>"
+							str += "</tr>";
+						}
+						$("#data-content").html(str);
+					}
+				})
+			}
+			return false;
+		}
+
+		function sorting(n) {
+			var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
+			table = document.getElementById("tablecp");
+			switching = true;
+			// Set the sorting direction to ascending:
+			dir = "asc";
+			/* Make a loop that will continue until
+			no switching has been done: */
+			while (switching) {
+				// Start by saying: no switching is done:
+				switching = false;
+				rows = table.rows;
+				/* Loop through all table rows (except the
+				first, which contains table headers): */
+				for (i = 1; i < (rows.length - 1); i++) {
+					// Start by saying there should be no switching:
+					shouldSwitch = false;
+					/* Get the two elements you want to compare,
+					one from current row and one from the next: */
+					x = rows[i].getElementsByTagName("TD")[n];
+					y = rows[i + 1].getElementsByTagName("TD")[n];
+					/* Check if the two rows should switch place,
+					based on the direction, asc or desc: */
+					if (dir == "asc") {
+						if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+							// If so, mark as a switch and break the loop:
+							shouldSwitch = true;
+							break;
+						}
+					} else if (dir == "desc") {
+						if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+							// If so, mark as a switch and break the loop:
+							shouldSwitch = true;
+							break;
+						}
+					}
+				}
+				if (shouldSwitch) {
+					/* If a switch has been marked, make the switch
+					and mark that a switch has been done: */
+					rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+					switching = true;
+					// Each time a switch is done, increase this count by 1:
+					switchcount++;
+				} else {
+					/* If no switching has been done AND the direction is "asc",
+					set the direction to "desc" and run the while loop again. */
+					if (switchcount == 0 && dir == "asc") {
+						dir = "desc";
+						switching = true;
+					}
+				}
+			}
+		}
+	</script>
+
+</div>
+
+</html>

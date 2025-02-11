@@ -1,0 +1,240 @@
+<!Doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{fragments/layout}">
+
+<div layout:fragment="content" style="margin: 0px;">
+	<div class="navbarcaridok">
+		<ul>
+			<li style="color: rgb(0, 128, 255);"><a href="/index" style="  text-decoration: none;">Beranda /</a></li>
+			<li style="color: grey;">&nbsp;Obat & Alat Kesehatan</li>
+		</ul>
+	</div>
+
+	<div class="container-fluid hasil">
+		<div class="row">
+			<div class="col-sm-9">
+				<h5>Hasil Pencarian berdasarkan kata kunci: <span class="katakunci"></span> </h5>
+				<h5><span class="spesi"></span> </h5>
+			</div>
+			<div class="col-sm-3" align="right">
+				<button class="btn btn-outline-primary px-4 py-2 fw-bold" onclick="cariobat()">Ulangi
+					Pencarian</button>
+			</div>
+		</div>
+	</div>
+	<div class="container-fluid hasil2">
+		<div class="row" id="datadokter">
+			<div class="col-sm-6 kolom2">
+				<div class="kolomdokter">
+					<div class="row">
+						<div class="col-sm-9">
+							<table>
+								<tr>
+									<td><strong>Nama Obat</strong></td>
+								</tr>
+								<tr>
+									<td style="font-size: 9pt; padding-left: 10px;">Packaging</td>
+								</tr>
+								<tr>
+									<td style="font-size: 9pt; padding-left: 10px; padding-bottom: 10px;">Harga min -
+									Harga max</td>
+								</tr>
+								<tr>
+									<td style="font-size: 10pt; padding-left: 11px;"><!--<img src="/images/building.svg"
+											width="15px" height="auto">-->Indikasi</td>
+								</tr>
+								<!--<tr>
+									<td style="font-size: 10pt; padding-left: 11px;"><img src="/images/building.svg"
+											width="15px" height="auto">RS Persahabatan</td>
+								</tr>-->
+								<tr>
+									<td style="padding-top: 10px;" id="jumlah"><button
+											class="btn btn-primary btn-sm btn-block"
+											onclick="tambah()">Tambah Ke Keranjang</button></td>
+								</tr>
+							</table>
+						</div>
+						<div class="col-sm-3">
+							<table>
+								<tr rowspan="4">
+									<td style="padding-bottom: 10px;"><img class="img-responsive pdoctor"
+											src="/images/panadol.jpg" width="80" height="auto"></td>
+								</tr>
+								<!--<tr>
+									<td><button class="btn btn-outline-primary btn-sm btn-block">Chat</button></td>
+								</tr>-->
+								<tr>
+									<td><button class="btn btn-outline-primary btn-sm btn-block">Detail</button></td>
+								</tr>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+
+		</div>
+	</div>
+	
+	<div id="cart">
+		
+	</div>
+
+	<script>
+		function cariobat() {
+			$.ajax({
+				url: '/beliobat/index',
+				type: 'get',
+				contentType: 'html',
+				success: function (result) {
+					$('#mymodal').modal('show')
+					$('.modal-title').html('Cari Obat & Alat Kesehatan')
+					$('.modal-body').html(result)
+				}
+			})
+		}
+
+		function cari() {
+				var category = $('#category').val()
+				var keyword = $('#keyword').val()
+				var segmen = $('#segmentation').val()
+				var max = $('#max').val()
+				var min = $('#min').val()
+				
+				var tipe = $('#tipe').val()
+				
+				if(keyword=="") keyword="_";
+				if(min=="") min="0";
+				if(max=="") max="100000000";
+
+				var str = "";
+
+				$.ajax({
+					url: '/api/beliobat/cariobat/' + category + '/' + keyword + '/' + segmentation + '/' + min + '/' + max,
+					type: 'get',
+					contentType: 'application/json',
+					success: function (data) {
+						console.log(data);
+						for (i = 0; i < data.length; i++) {
+							str += '<div class="col-sm-6 kolom2">';
+							str += '<div class="kolomdokter">';
+							str += '<div class="row">';
+							str += '<div class="col-sm-9">';
+							str += '<table>';
+							str += '<tr><td><strong>' + data[i].name + '</strong></td></tr>';
+							str += '<tr><td style="font-size: 9pt; padding-left: 10px;">' + data[i].packaging + '</td></tr>';
+							str += '<tr><td style="font-size: 9pt; padding-left: 10px; padding-bottom: 10px;">' + data[i].min +' - ' + data[i].max + '</td></tr>';
+							str += '<tr><td style="font-size: 10pt; padding-left: 11px;"><!--<img src="/images/building.svg" width="15px" height="auto">-->' + data[i].indication + '</td></tr>';
+							str += '<tr><td style="padding-top: 10px;"><button class="btn btn-primary btn-sm btn-block" onclick="tambah()">Tambah Ke Keranjang</button></td></tr>';
+							str += '</table>';
+							str += '</div>';
+							str += '<div class="col-sm-3">';
+							str += '<table>';
+							str += '<tr rowspan="4"><td style="padding-bottom: 10px;"><img class="img-responsive pdoctor" src="/images/' + data[i].image_path + '" width="80" height="auto"></td></tr>';
+							str += '<!--<tr><td><button class="btn btn-outline-primary btn-sm btn-block">Chat</button></td></tr>-->';
+							str += '<tr><td><button class="btn btn-ouline-primary btn-sm btn-block">Detail</button></td></tr>';
+							str += '</table>';
+							str += '</div>';
+							str += '</div>';
+							str += '</div>';
+							str += '</div>';
+						}
+						$('#datadokter').html(str);
+					}
+				})
+				$('#mymodal').modal('hide')
+				$('.katakunci').html("Kategori "+category+", Kata Kunci"+keyword);
+				$('.spesi').html(tipe);
+				
+		}
+		
+		$.ajax({
+			
+					url: '/api/caridokter/doctors',
+					type: 'get',
+					contentType: 'application/json',
+					success: function (data) {
+						//console.log(data);
+						var str = "";
+						for (i = 0; i < data.length; i++) {
+							str += '<div class="col-sm-6 kolom2">';
+							str += '<div class="kolomdokter">';
+							str += '<div class="row">';
+							str += '<div class="col-sm-9">';
+							str += '<table>';
+							str += '<tr><td><strong>' + data[i].name + '</strong></td></tr>';
+							str += '<tr><td style="font-size: 9pt; padding-left: 10px;">' + data[i].packaging + '</td></tr>';
+							str += '<tr><td style="font-size: 9pt; padding-left: 10px; padding-bottom: 10px;">' + data[i].min +' - ' + data[i].max + '</td></tr>';
+							str += '<tr><td style="font-size: 10pt; padding-left: 11px;"><!--<img src="/images/building.svg" width="15px" height="auto">-->' + data[i].indication + '</td></tr>';
+							str += '<tr><td style="padding-top: 10px;"><button class="btn btn-primary btn-sm btn-block" onclick="tambah()">Tambah Ke Keranjang</button></td></tr>';
+							str += '</table>';
+							str += '</div>';
+							str += '<div class="col-sm-3">';
+							str += '<table>';
+							str += '<tr rowspan="4"><td style="padding-bottom: 10px;"><img class="img-responsive pdoctor" src="/images/' + data[i].image_path + '" width="80" height="auto"></td></tr>';
+							str += '<!--<tr><td><button class="btn btn-outline-primary btn-sm btn-block">Chat</button></td></tr>-->';
+							str += '<tr><td><button class="btn btn-ouline-primary btn-sm btn-block">Detail</button></td></tr>';
+							str += '</table>';
+							str += '</div>';
+							str += '</div>';
+							str += '</div>';
+							str += '</div>';
+						}
+						//$('#datadokter').html(str);
+					}
+				})
+	function tambah(){
+		var j = 1
+		var str ='<button class="btn btn-outline-primary btn-sm btn-block" onclick="minus('+j+')")><b>-</b></button>'
+		//str += '<input type="number" id="qty_input" value="1" min="1">'
+		str += '&ensp;<span id="banyak"></span>&ensp;'
+		str += '<button class="btn btn-outline-primary btn-sm btn-block" onclick="plus('+j+')"><b>+</b></button>'
+		var c ='<div style="background-color: #EEF2FF; position: fixed; width: 100%; color: grey; bottom: 0; padding: 15px; font-weight: 500; font-size: 14px;">'
+		c += '<div class="container">'
+		c += '<div class="row">'
+		c += '<div class="col-sm-9">'
+		c += '<h5>FOOTER</h5>'
+		c += '</div>'
+		c += '<div class="col-sm-3" align="right">'
+		c += '<button class="btn btn-primary px-4 py-2 fw-bold">'
+		c += '<img src="/images/cart1.svg" width="15px" height="auto">&ensp;Keranjang Saya'
+		c += '</button>'
+		c += '</div>'
+		c += '</div>'
+		c += '</div>'
+		$('#jumlah').html(str);
+		$('#banyak').html(j);
+		$('#cart').html(c)
+	}
+	function plus(j){
+		var j1 = j
+		j1++
+		var str1 ='<button class="btn btn-outline-primary btn-sm btn-block" onclick="minus('+j1+')")><b>-</b></button>'
+		str1 += '&ensp;<span id="banyak"></span>&ensp;'
+		str1 += '<button class="btn btn-outline-primary btn-sm btn-block" onclick="plus('+j1+')"><b>+</b></button>'
+		$('#jumlah').html(str1);
+		$('#banyak').html(j1);
+		//console.log(j1)
+	}
+	function minus(j){
+		var j2 = j
+		if(j2>1){
+			j2--
+			var str ='<button class="btn btn-outline-primary btn-sm btn-block" onclick="minus('+j2+')")><b>-</b></button>'
+			str += '&ensp;<span id="banyak"></span>&ensp;'
+			str += '<button class="btn btn-outline-primary btn-sm btn-block" onclick="plus('+j2+')"><b>+</b></button>'
+			$('#jumlah').html(str);
+			$('#banyak').html(j2);
+		}else{
+			var str = '<button class="btn btn-primary btn-sm btn-block" onclick="tambah()">'
+			str += 'Tambah Ke Keranjang'
+			str += '</button>'
+			var c = ""
+			$('#jumlah').html(str);
+			$('#cart').html(c);
+		}
+		//console.log(j2)
+	}
+	</script>
+</div>
+
+</html>

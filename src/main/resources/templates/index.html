@@ -1,0 +1,158 @@
+<!Doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{fragments/layout}">
+
+<div layout:fragment="content" style="margin: 0px;">
+
+	<input type="hidden" class="roleid" th:value="${sessrole}">
+	<input type="hidden" class="roleid2" th:value="${role}">
+
+	<div class="row" style="width: 100%; min-height: 100vh;">
+		<div class="col-sm-2" style="border-right:0px solid gray;">
+
+			<div class="sidenav" id="sidenav2">
+				<div class="header_toggle me-3 " align=right onclick="closeNav()" data-value="1" id="toogle"> <i
+						class='bi-three-dots' id="header-toggle" style="color: rgb(0, 128, 255);"></i> </div>
+				<div id="mymenu">
+					<button class="dropdown-btn">Menu
+						<i class="fa fa-caret-down"></i>
+					</button>
+				</div>
+			</div>
+
+		</div>
+		<div class="col-sm-10">
+			<div class="container-fluid">
+				<div class="row justify-content-around" style="margin: 100px 0px;" id="menuParent">
+					<div class="col-sm-2 kolom">
+						<div class="menu text-center" onclick="openobat()">
+							<img class="img-responsive" src="/images/medical1.svg" width="200" height="200">
+							<p>Menu</p>
+						</div>
+					</div>
+
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<script>
+
+		function openlogin() {
+			$.ajax({
+				url: '/users/login',
+				type: 'get',
+				contentType: 'html',
+				success: function (result) {
+					$('#mymodal').modal('show')
+					$('.modal-title').html('Masuk')
+					$('.modal-body').html(result)
+
+				}
+			})
+		}
+
+		function opendaftar() {
+			$.ajax({
+				url: '/users/daftar',
+				type: 'get',
+				contentType: 'html',
+				success: function (result) {
+					$('#mymodal').modal('show')
+					$('.modal-title').html('Daftar')
+					$('.modal-body').html(result)
+				}
+			})
+		}
+
+		function openobat() {
+			$.ajax({
+				url: '/beliobat/index',
+				type: 'get',
+				contentType: 'html',
+				success: function (result) {
+					$('#mymodal').modal('show')
+					$('.modal-title').html('Cari Obat & Alat Kesehatan')
+					$('.modal-body').html(result)
+				}
+			})
+		}
+
+		function caridokter() {
+			$.ajax({
+				url: '/caridokter/form',
+				type: 'get',
+				contentType: 'html',
+				success: function (result) {
+					$('#mymodal').modal('show')
+					$('.modal-title').html('Cari Dokter')
+					$('.modal-body').html(result)
+				}
+			})
+		}
+
+		function opengoldar() {
+			$.ajax({
+				url: '/goldarah/index',
+				type: 'get',
+				contentType: 'html',
+				success: function (result) {
+					$('#mymodal').modal('show')
+					$('.modal-title').html('Cari Dokter')
+					$('.modal-body').html(result)
+				}
+			})
+		}
+
+		var rid = $('.roleid').val()
+		if (rid == "") rid = 1;
+		console.log(rid)
+
+		$.ajax({
+			url: '/api/menu/getRoleId/' + rid,
+			type: 'get',
+			contentType: 'application/json',
+			success: function (menu) {
+
+				var str2 = "";
+				for (i = 0; i < menu.length; i++) {
+					str2 += '<div class="col-sm-2 kolom">'
+					str2 += '<div class="menu text-center" onclick="' + menu[i].url + '">'
+					str2 += '<img class="img-responsive" src="/images/' + menu[i].bigIcon + '" width="200" height="200">'
+					str2 += '<p>' + menu[i].name + '</p>'
+					str2 += '</div>'
+					str2 += ' </div>'
+				}
+
+				$('#menuParent').html(str2)
+				if (rid != 1) {
+					var str = "";
+					for (i = 0; i < menu.length; i++) {
+						str += '<button class="dropdown-btn align-middle" onclick="' + menu[i].url + '"><i class="bi-'+menu[i].smallIcon +' icon"></i> <span class="sidename">' + menu[i].name + '</span></button>'
+					}
+					$('#mymenu').html(str)
+				} else {
+					$('.sidenav').hide()
+				}
+
+
+			}
+		})
+
+		function closeNav() {
+			var val = document.getElementById('toogle').getAttribute('data-value');
+			if (val== "1") {
+				$('.sidenav').css("width", "55px");
+				$('.sidename').css("display", "none");
+				 $('#toogle').attr( 'data-value','2');
+			} else if(val=="2") {
+				$('.sidenav').css("width", "200px");
+				$('.sidename').css("display", "inline-block");
+				 $('#toogle').attr( 'data-value','1');
+			}
+		}
+
+	</script>
+</div>
+
+</html>

@@ -1,0 +1,333 @@
+<!Doctype html>
+<html>
+<head>
+	<title>Login</title>
+	<link rel="stylesheet" href="/css/login.css">
+</head>
+<body>
+<section class="login">
+	
+	<!--<form action="/users/ceklogin" method="post" enctype="application/x-www-form-urlencoded" >-->
+		<table class="table">
+			<tr>
+				<td>Masukan email Anda. Kami akan melakukan pengecekan</td>
+			</tr>
+			<tr>
+				<td><i><span>Email*</span></i><br><input type="email" required title="Email required" placeholder="" id="email" name="Email" style="width:100%;"><br><i><span class="valid" id="val_email"></span></i></td>
+			</tr>
+			<tr>
+				<td align="center"><button type="submit" class="btn btn-primary" onclick="kirimotp()">Kirim OTP</button></td>
+			</tr>
+        </table>
+    <!--</form>-->
+</section>
+<script>
+var finemail='';
+var finpassword='';
+var countDownDate ='';
+var x ='';
+var emailtemp='';
+
+function kirimotp(){
+	if($("#email").val()=="") {
+		$("#val_email").html("*Email wajib diisi");
+	} else {
+		emailtemp = $('#email').val()
+		sendotp();
+				
+	}	
+}
+
+function konfirmasiotp(){
+	
+	if($("#otp").val()=="") {
+		$("#val_otp").html("*OTP wajib diisi");
+	} else {
+		var otp = $('#otp').val()
+		$.ajax({
+		url: '/api/users/cekotp/'+otp,
+		type: 'get',
+		contentType: 'application/json',
+		success: function (result) {
+			console.log(result)
+			if(result==true) {
+				clearInterval(x);
+				var str = '<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous" />'
+				str = '<table class="table">'
+				str+= '<tr>'
+				str+= '<td  align="center">Masukkan password baru untuk akun anda</td>'
+				str+= '</tr>'
+				str+= '<tr>'
+				str+= '<td><i><span>Password</span></i><br><input type="password" pattern="/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*_=+-]).{8,}$/g" id="password1" style="width:90%;">'
+				str += '<button class="btn border border-left-0" type="button" onclick="password_show_hide();">'
+				str += '<i class="fas fa-eye" id="show_eye" style="color: blue;"></i>'
+				str += '<i class="fas fa-eye-slash d-none" id="hide_eye" style="color: blue;"></i>'
+				str += '</button></td>'
+				str+= '</tr>'
+				str+= '<tr>'
+				str+= '<td><i><span>Masukkan ulang password</span></i><br><input type="password" id="password2" style="width:90%;">'
+				str += '<button class="btn border border-left-0" type="button" onclick="password_show_hide2();">'
+				str += '<i class="fas fa-eye" id="show_eye2" style="color: blue;"></i>'
+				str += '<i class="fas fa-eye-slash d-none" id="hide_eye2" style="color: blue;"></i>'
+				str += '</button><br><i><span class="valid" id="val_pass"></span></i></td>'
+				str+= '</tr>'
+				str+= '<tr>'
+				str+= '<td colspan="2"  align="center"><button class="btn btn-primary" onClick="setpassword()">Set Password</button></td>'
+				str+= '</tr>'			
+				str+= '</table>'
+				
+				$('#mymodal').modal('show')
+				$('.modal-title').html('Set Password')
+				$('.modal-body').html(str)
+				
+			} else {
+				$("#val_otp").html("*Kode OTP salah");
+			}
+		}
+		})
+		
+	}
+	
+	
+	
+	
+}
+
+function setpassword(){
+	var pass1=$('#password1').val();
+	var pass2=$('#password2').val();
+	console.log(pass1)
+	console.log(pass2)
+	
+	var lowerCaseLetters = /[a-z]/g;
+	var upperCaseLetters = /[A-Z]/g;
+	var numbers = /[0-9]/g;
+	var schar = /[!@#$%^&*_=+-]/g;
+	if (pass1.match(lowerCaseLetters) && pass1.match(upperCaseLetters) && pass1.match(numbers) && pass1.match(schar) && pass1.length >= 8) {
+		if(pass1===pass2) {
+		finpassword=pass1;
+		$.ajax({
+			url: '/api/role/',
+			type: 'get',
+			contentType: 'application/json',
+			success: function (role) {
+				
+				var str = '<table class="table">'
+				str+= '<tr>'
+				str+= '<td><i><span id="val_pass">Nama Lengkap*</span></i><br><input type="text" id="nama" style="width:100%;"></td>'
+				str+= '</tr>'
+				str+= '<tr>'
+				str+= '<td><i><span id="val_pass">Nomor Handphone</span></i><br><input type="tel" id="phone" pattern="[0-9]{3}-[0-9]{2}-[0-9]{3}" style="width:100%;><br><i><span class="valid" id="val_pass"></span></i></td>'
+				str+= '</tr>'
+				str+= '<tr>'
+				str+= '<td><i><span id="val_pass">Daftar Sebagai</span></i><br><select name="role" id="role" style="width:100%;">'
+				str+= '<option selected disabled>--Pilih--</option>'
+				for (i = 0; i < role.length; i++) {
+					str+= '<option value="'+role[i].id+'">'+role[i].name+'</option>'
+				}
+				console.log(role)
+				str+= '</select></td>'
+				str+= '</tr>'
+				str+= '<tr>'
+				str+= '<td colspan="2"  align="center"><button class="btn btn-primary" onClick="daftar()">Daftar</button></td>'
+				str+= '</tr>'			
+				str+= '</table>'
+				
+				$('#mymodal').modal('show')
+				$('.modal-title').html('Set Password')
+				$('.modal-body').html(str)	
+			}
+		})
+		
+		} else {
+			$("#val_pass").html("*Password tidak sama");
+		}
+		
+		} else {
+			$("#val_pass").html("*Password harus mengandung minimal 8 karakter, harus mengandung huruf besar, huruf kecil, angka, dan special character");
+		}
+			
+	
+}
+function daftar(){
+	var fullname=$('#nama').val();
+	var nophone=$('#phone').val();
+	var role=$('#role').val();
+	var bid='';
+	console.log(finemail)
+	console.log(finpassword)
+	console.log(nophone)
+	console.log(role)
+	
+	var data2= '{'
+		data2+= '"fullname":"'+fullname+'",'
+		data2+= '"mobilePhone":"'+nophone+'",'
+		data2+= '"image":"",'
+		data2+= '"imagePath":"",'
+		
+		data2+= '"createdBy":"",'
+		data2+= '"createdOn":"'+Date.now()+'",'
+		data2+= '"modifiedBy":"",'
+		data2+= '"modifiedOn":"",'
+		data2+= '"deletedBy":"",'
+		data2+= '"deletedOn":"",'
+		data2+= '"isDelete":"false"'
+		
+		data2+= '}'
+		console.log(data2)
+		
+		$.ajax({	
+			url:'/api/users/savebiodata',
+			type:'post',
+			data:data2,
+			contentType:'application/json',
+			success: function(result3){
+				//console.log(result3)
+				$.ajax({	
+				url:'/api/users/lastbiodataid',
+				type:'get',
+				contentType:'application/json',
+				success: function(hasil){
+					console.log('hasil: '+hasil)
+				
+				var data= '{'
+				data+= '"biodataId":"'+hasil+'",'
+				data+= '"roleId":"'+role+'",'
+				data+= '"email":"'+finemail+'",'
+				data+= '"password":"'+finpassword+'",'
+				data+= '"isLocked":"",'
+				data+= '"lastLogin":"",'
+				data+= '"loginAttempt":"",'
+				
+				data+= '"createdBy":"'+hasil+'",'
+				data+= '"createdOn":"'+Date.now()+'",'
+				data+= '"modifiedBy":"",'
+				data+= '"modifiedOn":"",'
+				data+= '"deletedBy":"",'
+				data+= '"deletedOn":"",'
+				data+= '"isDelete":"false"'
+				
+				data+= '}'
+				console.log(data)
+				
+				$.ajax({	
+					url:'/api/users/',
+					type:'post',
+					data:data,
+					contentType:'application/json',
+					success: function(result1){
+						//console.log(result1)
+						location.reload(1)
+						
+					}
+				})
+			}
+		})
+				
+			}
+		})
+			
+}
+
+function sendotp(){
+		$.ajax({
+		url: '/api/users/cekemail/'+emailtemp,
+		type: 'get',
+		contentType: 'application/json',
+		success: function (result) {
+			if(result==0){
+				finemail=emailtemp;
+				var str = '<table class="table">'
+				str+= '<tr>'
+				str+= '<td  align="center">Masukkan kode OTP yang telah dikirimkan ke email anda</td>'
+				str+= '</tr>'
+				str+= '<tr>'
+				str+= '<td  align="center"><input type="text" id="otp"><br><i><span class="valid" id="val_otp"</span></i></td>'
+				str+= '</tr>'
+				str+= '<tr>'
+				str+= '<td  align="center" id="otpkirimulang">Kirim ulang kode OTP dalam <span id="otpexpired"></span></td>'
+				str+= '</tr>'
+				str+= '<tr>'
+				str+= '<td colspan="2"  align="center"><button class="btn btn-primary" onClick="konfirmasiotp()">Konfirmasi OTP</button></td>'
+				str+= '</tr>'
+				str+= '</table>'
+				
+				$('#mymodal').modal('show')
+				$('.modal-title').html('Verifikasi E-mail')
+				$('.modal-body').html(str)
+				otpexp();
+			} else {
+				$("#val_email").html("*Email sudah terdaftar");
+			
+			}
+		}
+		})
+}
+
+function otpexp(){
+	countDownDate = new Date().getTime()+3 * 60 * 1000;
+	x = setInterval(function() {
+
+	  // Get today's date and time
+	  var now = new Date().getTime();
+	    
+	  // Find the distance between now and the count down date
+	  var distance = countDownDate - now;
+	    
+	  // Time calculations for days, hours, minutes and seconds
+	  var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+	  var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+	  var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+	  var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+	    
+	  // Output the result in an element with id="demo"
+	  document.getElementById("otpexpired").innerHTML = 
+	  + minutes + ":" + seconds ;
+	    
+	  // If the count down is over, write some text 
+	  if (distance < 0) {
+	    clearInterval(x);
+	    
+	    var str='<a href="#" onClick="javascript:sendotp()">Send OTP</button>';
+	    
+	    $('#otpkirimulang').html('Kirim ulang OTP? '+str)
+	    
+	  }
+	}, 1000);
+}
+
+function password_show_hide() {
+	var x = document.getElementById("password1");
+	var show_eye = document.getElementById("show_eye");
+	var hide_eye = document.getElementById("hide_eye");
+	hide_eye.classList.remove("d-none");
+	if (x.type === "password") {
+		x.type = "text";
+		show_eye.style.display = "none";
+		hide_eye.style.display = "block";
+	} else {
+		x.type = "password";
+		show_eye.style.display = "block";
+		hide_eye.style.display = "none";
+	}
+}
+
+function password_show_hide2() {
+	var x = document.getElementById("password2");
+	var show_eye2 = document.getElementById("show_eye2");
+	var hide_eye2 = document.getElementById("hide_eye2");
+	hide_eye2.classList.remove("d-none");
+	if (x.type === "password") {
+		x.type = "text";
+		show_eye2.style.display = "none";
+		hide_eye2.style.display = "block";
+	} else {
+		x.type = "password";
+		show_eye2.style.display = "block";
+		hide_eye2.style.display = "none";
+	}
+}
+
+</script>
+</body>
+</html>

@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{fragments/layout}">
+<div layout:fragment="content">
+	<!-- As a heading -->
+    <nav class="navbar navbar-light bg-primary">
+        <div class="container-fluid">
+            <span class="navbar-brand mb-0 h1">KATEGORI PRODUK KESEHATAN</span>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="row">
+          <div class="col-12">
+            <!-- search -->
+            <div class="d-flex justify-content-between mt-3">
+                <input class="searchinput" type="search" placeholder="Search" aria-label="Search" id="mysearch">
+                <button class="btn btn-outline-success" onclick="openformbiodata()">Tambah</button>
+            </div>
+            <!-- table -->
+            <div class="table-responsive mt-4">
+            	<table class="table align-middle">
+	                <thead class="table-info">
+	                    <th>NAMA</th>
+	                    <th>Action</th>
+	                </thead>
+	                <tbody id="data-content">
+		                
+	                </tbody>
+            	</table>
+            </div>
+          </div>
+        </div>
+    </div>
+    <script>
+    	reloaddata();
+    	
+    	function cekValidData() {
+			var nama = document.getElementById("inputnama").value;
+			$.ajax({
+				url: '/katprodukkesehatan/api/cekdata/'+nama,
+				type: 'get',
+				contentType: 'application/json',
+				success: function (result) {
+					if (result>=1) {
+						document.getElementById("val_pass").innerHTML = "Maaf, nama data sudah ada";
+					} else {
+						document.getElementById("val_pass").innerHTML = "";
+					}
+				}
+			})
+		}
+    	
+    	function reloaddata() {
+			$.ajax({
+				url: "/katprodukkesehatan/api/",
+				type: "get",
+				contentType: "application/json",
+				success: function (result) {
+					console.log(result)
+					var str = "";
+					for (i = 0; i < result.length; i++) {
+						str += '<tr>'
+						str += '<td>'+result[i].name+'</td>'
+		                str += '<td>'	
+	                    str += '<button class="btn btn-warning me-3" onclick="openedit('+result[i].id+')">Ubah</button>'	
+	                    str += '<button class="btn btn-danger" onclick="delete_('+result[i].id+')">Hapus</button>'
+	                    str += '</td>'	
+	                	str += '</tr>'	
+					}
+					$("#data-content").html(str);
+				}
+			})
+		}
+    	
+    	function openformbiodata() {
+			//window.open('/hubunganpasien/form_hubpasien','_self')
+			$.ajax({
+    			url:'/katprodukkesehatan/form_katprodukkesehatan',
+    			type:'get',
+    			contentType:'html',
+    			success:function(result) {
+        			console.log(result)
+        			$('#mymodal').modal('show')
+        			$('.modal-title').html('TAMBAH')
+        			$('.modal-body').html(result)
+    			}
+			})	
+		}
+		
+		function closemodals() {
+			$('#mymodal').modal('hide')
+		}
+		
+		function openedit(id) {
+			//window.open('/hubunganpasien/edit/'+id,'_self')
+			$.ajax({
+    			url:'/katprodukkesehatan/edit/'+id,
+    			type:'get',
+    			contentType:'html',
+    			success:function(result) {
+        			console.log(result)
+        			$('#mymodal').modal('show')
+        			$('.modal-title').html('UBAH')
+        			$('.modal-body').html(result)
+    			}
+			})
+		}
+		
+		function delete_(id) {
+			$.ajax({
+				url: '/katprodukkesehatan/api/' + id,
+				type: 'get',
+				contentType: 'application/json',
+				success: function (result) {
+					console.log(result)
+
+					var str ='';
+					str += '<table>'
+					str += '<tr>'
+					str += '<td>Anda akan menghapus '+result.name+'?</td>'
+					str += '</tr>'
+					str += '<tr>'
+					str += '<td class="d-flex justify-content-end">'
+					str += '<button type="button" class="btn btn-primary me-3" onclick="closemodals()">Tidak</button>'
+					str += '<button type="button" class="btn btn-primary" onclick="hapus('+result.id+')">Ya</button>'
+					str += '</td>'
+					str += '</tr>'
+					str += '</table>'
+
+					$('#mymodal').modal('show')
+					$('.modal-title').html('HAPUS !')
+					$('.modal-body').html(str)
+
+				}
+			})
+			//var idk = id;
+			//var names = $("#nameget").val();
+			//console.log(names);	
+		}
+		
+		function hapus(id) {
+			window.open('/katprodukkesehatan/delete/'+id,'_self')
+		}
+		
+		var input = document.getElementById("mysearch");
+		input.addEventListener("keyup", function(event) {
+		  if (event.keyCode === 13) {
+			var nama = document.getElementById("mysearch").value;
+			if (nama=="") {
+				reloaddata();
+			} else {
+				$.ajax({
+				url: '/katprodukkesehatan/api/cari/'+nama,
+				type: "get",
+				contentType: "html",
+				success: function (result) {
+					console.log(result)
+					var str = "";
+					for (i = 0; i < result.length; i++) {
+						str += '<tr>'
+						str += '<td>'+result[i].name+'</td>'
+		                str += '<td>'	
+	                    str += '<button class="btn btn-warning me-3" onclick="openedit('+result[i].id+')">Ubah</button>'	
+	                    str += '<button class="btn btn-danger" onclick="delete_('+result[i].id+')">Hapus</button>'
+	                    str += '</td>'	
+	                	str += '</tr>'	
+					}
+					$("#data-content").html(str);
+				}
+				})
+				//window.open('/hubunganpasien/cari/'+nama,'_self')
+			}
+		  }
+		});
+    </script>
+</div>
+</html>

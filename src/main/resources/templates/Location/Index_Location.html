@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{fragments/layout}">
+
+<div layout:fragment="content">
+	
+	<div style="margin-top: 30px;" class="container">
+	<table style="width: 100%;">
+		<tr>
+			<td>
+				<form style="padding-left: 150px;">
+					<input type="text" name="search" onkeypress="carilokasi(event)" id="searchbar"
+						placeholder="Search by nama" style="margin-left: 0px; width: 300px;" class="form-control"
+						autocomplete="off">
+				</form>
+				<select name="level" id="level">
+				<option selected disabled>--Pilih--</option>'
+				
+				
+			</td>
+			<td style="padding-right: 150px;">
+				<button class="btn" onclick="openform()" style="float:right; color: rgb(0, 128, 255); background-color: white;">+ Tambah</button>
+			</td>
+
+		</tr>
+	</table>
+	</div>
+	
+	<div style="margin-top: 30px;" class="container">
+	<table class="table table-condensed" id="tableloc" style="width: 1000px;" align="center">
+		<thead class="bg-primary">
+			<tr>
+				<td onclick="sorting(0)"><b>Nama</td>
+				<td><b>Lokasi</b></td>
+				<td><b>Wilayah</b></td>
+				<td><b>#</b></td>
+			</tr>
+		</thead>
+
+		<tbody id="data-content">
+
+		</tbody>
+	</table>
+	</div>
+
+<script>
+	reloaddata();
+
+		function reloaddata() {
+			$.ajax({
+				url: "/location/api/",
+				type: "get",
+				contentType: "application/json",
+				success: function (result) {
+					console.log(result)
+					var str = "";
+					for (i = 0; i < result.length; i++) {
+						str += "<tr>";
+						str += "<td>" + result[i].nama + "</td>";
+						str += "<td>" + result[i].lokasi + "</td>";
+						str += "<td>" + result[i].wilayah + "</td>";
+						str += "<td style='text-align: right;'>";
+						str += "<button class = 'btn btn-info' onclick = 'openedit(this.value)' value = '" + result[i].id + "'>U</button>";
+						str += "<button class = 'btn btn-danger' onclick = 'formdelete(this.value)' value = '" + result[i].id + "'>H</button>";
+						str += "</td>"
+						str += "</tr>";
+					}
+					$("#data-content").html(str);
+				}
+			})
+		}
+		
+		function openform() {
+			var str = '<table class="table">'
+				str+= '<tr>'
+				str+= '<td><i><span id="val_level">Level Lokasi*</span></i><br><select name="level" id="level" style="width:100%;">'
+			$.ajax({
+				url: '/locationlevel/api/',
+				type: 'get',
+				contentType: 'application/json',
+				success: function (level) {
+					str+= '<option selected disabled>--Pilih--</option>'
+					for (i = 0; i < level.length; i++) {
+						str+= '<option value="'+level[i].id+'">'+level[i].name+'</option>'
+					}
+					
+					console.log(result)
+					$('#mymodal').modal('show')
+					$('.modal-title').html('Tambah Lokasi')
+					$('.modal-body').html(result)
+				}
+			})
+		}
+		
+</script>
+
+
+</div>
+
+</html>

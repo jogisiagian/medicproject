@@ -1,0 +1,29 @@
+<!Doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+<div layout:fragment="content">
+
+	<form th:action="@{~/layoutprofil/save}" th:object="${userprofilform}" method="POST" enctype="multipart/form-data">
+		<input type="hidden" th:field="*{Id}" th:value="${Id}">
+		<table>
+			<tr>
+				<td>Nama Lengkap</td>
+				<td><input type="text" th:field="*{Fullname}" th:value="${Fullname}" class="form-control" id="fullname"></td>
+			</tr>
+			<tr>
+				<td>Tanggal Lahir</td>
+				<td><input type="text" th:field="*{Dob}" th:value="${Dob}" class="form-control" id="tanggallahir"></td>
+			</tr>
+			<tr>
+				<td>No HP</td>
+				<td><input type="number" th:field="*{MobilePhone}" th:value="${MobilePhone}"
+						class="form-control" id="mobile_phone"></input></td>
+			</tr>
+			<tr>
+				<td><button type="submit" class="btn btn-primary" th:value="${Id}">Simpan</button></td>
+			</tr>
+		</table>
+	</form>
+</div>
+
+</html>

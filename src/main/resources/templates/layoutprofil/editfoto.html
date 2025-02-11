@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+<div layout:fragment="content">
+
+	<form th:action="@{~/layoutprofil/save}" th:object="${editfotoform}" method="POST" enctype="multipart/form-data">
+		<input type="hidden" th:field="*{Id}" th:value="${Id}">
+		<input type="hidden" th:field="*{Fullname}" th:value="${Fullname}">
+		<input type="hidden" th:field="*{MobilePhone}" th:value="${MobilePhone}">
+		<table>
+			
+			<tr>
+				<td>Image Path</td>
+				<td><input type="text" th:field="*{ImagePath}" id="phototext" th:value="${ImagePath}"
+						class="form-control"></td>
+			</tr>
+			<tr>
+				<td>Image</td>
+				<td>
+					<input type="file" id="filename" name="photofile" onchange="readurl(this)" class="form-control">
+					<br><img src="#" id="avatar" alt="Photo" height="80">
+				</td>
+			</tr>
+			<tr>
+				<td><button type="submit" class="btn btn-primary" th:value="${Id}">Simpan</button></td>
+			</tr>
+		</table>
+	</form>
+
+	<script>
+		function readurl(input) {
+			if (input.files && input.files[0]) {
+				var reader = new FileReader();
+
+				reader.onload = function (e) {
+					$('#avatar').attr('src', e.target.result);
+					$('#phototext').val($('input[type=file]').val().replace(/C:\\fakepath\\/i, ''))
+				}
+
+				reader.readAsDataURL(input.files[0]);
+			}
+		}
+	</script>
+
+
+</div>
+
+</html>
